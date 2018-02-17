@@ -1,4 +1,5 @@
-polyMap android application
+﻿polyMap android application
 =============================
 
 Создание приложения для просмотра карт зданий Политехнического университета и поиска аудиторий.
+Ветка: readme-edit
