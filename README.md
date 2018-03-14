@@ -52,10 +52,10 @@ polyMap android application
 Для запуска проекта потребуется:
 1) SDK components:  
   a) Android Emulator   
-  b) Android SDK Build-Tools (для создания проекта использовалась верся 27.0.3)   
-  c) Android SDK Platform (для создания проекта использовалась верся 27)    
+  b) Android SDK Build-Tools (для создания проекта использовалась верся 25.0.3)   
+  c) Android SDK Platform (для создания проекта использовалась верся 25)    
   d) SDK Patch Applier v4   
-  e) Sources for Android 27   
+  e) Sources for Android 25   
 2) Android Virtual Device
 3) IDE Andoid Studio
 
