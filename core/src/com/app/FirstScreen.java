@@ -20,7 +20,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 public class FirstScreen extends Stage implements Screen {
 
     private Stage stage;
-    private MyGame game;
+    public MyGame game;
     private boolean isPressed;
 
     FirstScreen(final MyGame game) {
@@ -32,11 +32,11 @@ public class FirstScreen extends Stage implements Screen {
         int row_height = 200;
         int col_width = 200;
 
-        stage.addActor(createImageButton("Settings_200up.png", "Settings_200down.png", col_width, row_height, 2 * col_width, 0));
-        stage.addActor(createImageButton("Map_200up.png", "Map_200down.png", col_width, row_height, 0, 0));
+        stage.addActor(createImageButtonSearchMap("Search_Map_200up.png", "Search_Map_200down.png", col_width, row_height, 2 * col_width, 0));
+        stage.addActor(createImageButtonMap("Map_200up.png", "Map_200down.png", col_width, row_height, 0, 0));
     }
 
-    private Button createImageButton(String textureNameUp, String textureNameDown, float width, float height, float x, float y) {
+    private Button createImageButtonSearchMap(String textureNameUp, String textureNameDown, float width, float height, float x, float y) {
         Texture tDown = new Texture(textureNameDown);
         Texture tUp = new Texture(textureNameUp);
 
@@ -51,7 +51,35 @@ public class FirstScreen extends Stage implements Screen {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (isPressed) {
                     dispose();
-                    game.setScreen(game.secondScreen);
+                    game.setScreen(game.inputABScreen);
+                }
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                isPressed = true;
+                return true;
+            }
+        });
+        return button;
+    }
+
+    private Button createImageButtonMap(String textureNameUp, String textureNameDown, float width, float height, float x, float y) {
+        Texture tDown = new Texture(textureNameDown);
+        Texture tUp = new Texture(textureNameUp);
+
+        Drawable drawableUp = new TextureRegionDrawable(new TextureRegion(tUp));
+        Drawable drawableDown = new TextureRegionDrawable(new TextureRegion(tDown));
+
+        ImageButton button = new ImageButton(drawableUp, drawableDown);
+        button.setSize(width, height);
+        button.setPosition(x, y);
+        button.addListener(new InputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if (isPressed) {
+                    dispose();
+                    game.setScreen(game.mapScreen);
                 }
             }
 

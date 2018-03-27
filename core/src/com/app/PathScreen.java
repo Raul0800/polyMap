@@ -9,15 +9,21 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+/**
+ * Created by UltraBook Samsung on 26.03.2018.
+ */
 
-public class SecondScreen extends Stage implements Screen {
+public class PathScreen extends Stage implements Screen{
+
     private Stage stage;
     public MyGame game;
     private boolean isPressed;
 
-    SecondScreen(final MyGame game) {
+    PathScreen(final MyGame game) {
+
         this.game = game;
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
@@ -35,8 +41,8 @@ public class SecondScreen extends Stage implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (isPressed) {
-                    dispose();
-                    game.setScreen(game.firstScreen);
+                    //dispose();
+                    game.setScreen(game.inputABScreen);
                 }
             }
 
@@ -49,6 +55,7 @@ public class SecondScreen extends Stage implements Screen {
         stage.addActor(button);
     }
 
+    @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
     }
@@ -63,21 +70,22 @@ public class SecondScreen extends Stage implements Screen {
 
     @Override
     public void resize(int width, int height) {
+
     }
 
     @Override
     public void pause() {
+
     }
 
     @Override
     public void resume() {
+
     }
 
     @Override
     public void hide() {
+
     }
 
-    @Override
-    public void dispose() {
-    }
 }

@@ -2,10 +2,12 @@ package com.app;
 
 import com.badlogic.gdx.Game;
 
-
 public class MyGame extends Game {
     public FirstScreen firstScreen;
     public SecondScreen secondScreen;
+    public InputABScreen inputABScreen;
+    public PathScreen pathScreen;
+    public MapScreen mapScreen;
 
     @Override
     public void create() {
@@ -13,7 +15,11 @@ public class MyGame extends Game {
 
         this.firstScreen = new FirstScreen(this);
         this.secondScreen = new SecondScreen(this);
+        this.inputABScreen = new InputABScreen(this);
+        this.pathScreen = new PathScreen(this);
+        this.mapScreen = new MapScreen(this);
         setScreen(firstScreen);
+
     }
 
     @Override

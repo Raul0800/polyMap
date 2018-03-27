@@ -8,6 +8,14 @@ import java.util.Iterator;
  * @author aneesh
  */
 class Vertex implements Iterable<Integer>{
+
+    /**
+     * Coordinate of vertex
+     */
+    private int x,y;
+
+    private int number;
+
     /**
      * Used for search algorithms.
      */
@@ -21,16 +29,18 @@ class Vertex implements Iterable<Integer>{
     /**
      * No parameter constructor.
      */
-    Vertex(){
+    public Vertex(){
         this.visited = false;
         this.neighbours = new ArrayList<Integer>();
     }
+
+    public void setNumber(int number) { this.number = number; }
 
     /**
      * Copy a vertex.(Deep copy)
      * @param rhs The vertex to copy from.
      */
-    Vertex(Vertex rhs){
+    public Vertex(Vertex rhs){
         this.visited = rhs.visited;
         this.neighbours = new ArrayList<Integer>(rhs.neighbours);
     }
@@ -39,15 +49,32 @@ class Vertex implements Iterable<Integer>{
      * Check to see if the vertex is marked as visited.
      * @return true/false
      */
-    boolean isVisited(){
+    public boolean isVisited(){
         return visited;
     }
+
+    /**
+     * Set coordinate of vertex
+     * @param x - coordinate x
+     * @param y - coordinate y
+     */
+    public void setCoordinate(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    /**
+     * Returns coordinate of vertex
+     * @return x or y coordinate of vertex
+     */
+    public int getX() { return this.x; }
+    public int getY() { return this.y; }
 
     /**
      * Remove a vertex from the list of neighbor.
      * @param v The vertex to remove.
      */
-    void removeNeighbour(int v){
+    public void removeNeighbour(int v){
         this.neighbours.remove(v);
     }
 
@@ -55,7 +82,7 @@ class Vertex implements Iterable<Integer>{
      *
      * @return The number of neighbors to this vertex.
      */
-    int noOfNeighbours(){
+    public int noOfNeighbours(){
         return this.neighbours.size();
     }
 
@@ -64,7 +91,7 @@ class Vertex implements Iterable<Integer>{
      * @param v The vertex in question.
      * @return true/false
      */
-    boolean isNeighbour(int v){
+    public boolean isNeighbour(int v){
         return this.neighbours.contains(v);
     }
 
@@ -72,7 +99,7 @@ class Vertex implements Iterable<Integer>{
      * Adds a new neighbor.
      * @param v The vertex to be added.
      */
-    void addNeighbour(int v){
+    public void addNeighbour(int v){
         this.neighbours.add(v);
     }
 
@@ -86,17 +113,20 @@ class Vertex implements Iterable<Integer>{
         }
     }
 
-
     /**
      * Mark the vertex as visited.
      * @param b
      */
-    void setVisited(boolean b){
+    public void setVisited(boolean b){
         this.visited = b;
     }
 
     @Override
     public Iterator<Integer> iterator(){
         return this.neighbours.iterator();
+    }
+
+    public void printInfo() {
+        System.out.println("Vertex " + number + ": (" + x + "; " + y + "). Neighbours : " + neighbours);
     }
 }
