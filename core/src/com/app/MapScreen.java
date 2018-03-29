@@ -34,6 +34,13 @@ public class MapScreen extends Stage implements Screen {
         Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
 
 
+
+        //Text Field for point
+        textFieldSearch = new TextField("", skin);
+        textFieldSearch.setPosition(50, game.getHeightScreen() - 300);
+        textFieldSearch.setSize(game.getWidthScreen() - 300, 100);
+        stage.addActor(textFieldSearch);
+
         //Text Button "BACK"
         TextButton backButton = new TextButton("< BACK", skin, "default");
         backButton.setSize(250, 100);
@@ -43,6 +50,8 @@ public class MapScreen extends Stage implements Screen {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (backButtonPressed) {
                     dispose();
+                    Gdx.input.setOnscreenKeyboardVisible(false);
+                    stage.unfocusAll();
                     game.setScreen(game.firstScreen);
                 }
             }
@@ -55,7 +64,28 @@ public class MapScreen extends Stage implements Screen {
         });
         stage.addActor(backButton);
 
+        //Text Button "SEARCH"
+        TextButton searchButton = new TextButton("GO >", skin, "default");
+        searchButton.setSize(200, 100);
+        searchButton.setPosition(game.getWidthScreen() - 220, game.getHeightScreen() - 300);
+        searchButton.addListener(new InputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if (serchButtonPressed) {
+                    dispose();
+                    Gdx.input.setOnscreenKeyboardVisible(false);
+                    stage.unfocusAll();
+                    game.setScreen(game.secondScreen);
+                }
+            }
 
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                serchButtonPressed = true;
+                return true;
+            }
+        });
+        stage.addActor(searchButton);
 
     }
 
