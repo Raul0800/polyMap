@@ -214,14 +214,14 @@ public class UndirGraph implements Graph{
      * @param b - end vertex
      * @return - path
      */
-    public ArrayList<Integer> searchPath(int a, int b) {
+    public ArrayList<Vertex> searchPath(int a, int b) {
 
         if(getVertex(a) == null || getVertex(b) == null)
             throw new NoSuchVertexException("no vertex\n");
 
         Map<Integer, Integer> prev = new HashMap<Integer, Integer>();
         Map<Integer, Integer> dist = new HashMap<Integer, Integer>();
-        ArrayList<Integer> path = new ArrayList<Integer>();
+        ArrayList<Vertex> path = new ArrayList<Vertex>();
 
         Set<Integer> keys = graphMap.keySet();
         for(Integer key : keys) {
@@ -260,10 +260,9 @@ public class UndirGraph implements Graph{
         }
 
         for(int i = bufList.size() - 1; i >= 0; i--) {
-            path.add(bufList.get(i));
+            path.add(graphMap.get(bufList.get(i)));
         }
-        path.add(b);
-
+        path.add(graphMap.get(b));
         return path;
     }
 

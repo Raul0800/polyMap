@@ -15,6 +15,5 @@ public interface Graph {
     void addEdge(int a, int b);
     void print();
 
-    ArrayList<Integer> searchPath(int a, int b);
-
+    ArrayList<Vertex> searchPath(int a, int b);
 }

@@ -21,13 +21,9 @@ public class SecondScreen extends Stage implements Screen {
         this.game = game;
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-
-        int row_height = 200;
-        int col_width = 200;
-
         Skin mySkin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
 
-        // Text Button
+        // Text Button "BACK"
         Button button = new TextButton("< BACK", mySkin, "default");
         button.setSize(250, 100);
         button.setPosition(50, 980);
