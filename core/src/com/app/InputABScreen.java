@@ -56,6 +56,8 @@ public class InputABScreen extends Stage implements Screen, GestureDetector.Gest
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (searchButtonPressed) {
+                    game.pathScreen.setFirstPoint(Integer.parseInt(tfFirstPoint.getText()));
+                    game.pathScreen.setSecondPoint(Integer.parseInt(tfSecondPoint.getText()));
                     game.setScreen(game.pathScreen);
                 }
             }

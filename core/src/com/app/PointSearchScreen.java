@@ -2,8 +2,10 @@ package com.app;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -12,31 +14,29 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import java.util.ArrayList;
+
 import javax.xml.soap.Text;
 
 /**
  * Created by UltraBook Samsung on 27.03.2018.
  */
 
-public class MapScreen extends Stage implements Screen {
+public class PointSearchScreen extends Stage implements Screen {
     private Stage stage;
     public MyGame game;
-    private TextField textFieldSearch;
     public Texture map = new Texture("I_plan_Draft_Final.png");
-    private boolean backButtonPressed, searchButtonPressed;
 
-    MapScreen(final MyGame game) {
+    private boolean backButtonPressed;
+
+    private int point;
+    ShapeRenderer pointShape;
+
+    PointSearchScreen(final MyGame game) {
         this.game = game;
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
-
-
-        //Text Field for point
-        textFieldSearch = new TextField("", skin);
-        textFieldSearch.setPosition(50, game.getHeightScreen() - 300);
-        textFieldSearch.setSize(game.getWidthScreen() - 300, 100);
-        stage.addActor(textFieldSearch);
 
         //Text Button "BACK"
         TextButton backButton = new TextButton("< BACK", skin, "default");
@@ -47,9 +47,7 @@ public class MapScreen extends Stage implements Screen {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (backButtonPressed) {
                     dispose();
-                    Gdx.input.setOnscreenKeyboardVisible(false);
-                    stage.unfocusAll();
-                    game.setScreen(game.firstScreen);
+                    game.setScreen(game.mapScreen);
                 }
             }
 
@@ -61,30 +59,7 @@ public class MapScreen extends Stage implements Screen {
         });
         stage.addActor(backButton);
 
-        //Text Button "SEARCH"
-        TextButton searchButton = new TextButton("GO >", skin, "default");
-        searchButton.setSize(200, 100);
-        searchButton.setPosition(game.getWidthScreen() - 220, game.getHeightScreen() - 300);
-        searchButton.addListener(new InputListener() {
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (searchButtonPressed) {
-                    dispose();
-                    Gdx.input.setOnscreenKeyboardVisible(false);
-                    game.pointSearchScreen.setPoint(Integer.parseInt(textFieldSearch.getText()));
-                    stage.unfocusAll();
-                    game.setScreen(game.pointSearchScreen);
-                }
-            }
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                searchButtonPressed = true;
-                return true;
-            }
-        });
-        stage.addActor(searchButton);
-
+        pointShape = new ShapeRenderer();
     }
 
     public void show() {
@@ -100,9 +75,28 @@ public class MapScreen extends Stage implements Screen {
         stage.getBatch().draw(map, 0, game.getHeightScreen()/6, game.getWidthScreen(), game.getHeightScreen()/2/*500*/);
         stage.getBatch().end();
 
+        drawPoint();
+
         stage.act(delta);
         stage.draw();
-        stage.draw();
+    }
+
+    public void setPoint (int point) { this.point = point; }
+
+    public void drawPoint() {
+
+        if(! game.getGraph().hasVertex(point) ) {
+            throw new UndirGraph.NoSuchVertexException("no vertex\n");
+        }
+        pointShape.begin(ShapeRenderer.ShapeType.Filled);
+        pointShape.setColor(Color.RED);
+
+        pointShape.rectLine(game.getGraph().getVertex(point).getX(),
+                game.getGraph().getVertex(point).getY() + game.getHeightScreen() / 6,
+                game.getGraph().getVertex(point).getX() + 10,
+                game.getGraph().getVertex(point).getY() + game.getHeightScreen() / 6 + 10,
+                10);
+        pointShape.end();
     }
 
     @Override
