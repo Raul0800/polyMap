@@ -1,17 +1,19 @@
 package com.app;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.input.GestureDetector;
 
 
 public class MyGame extends Game {
-    public FirstScreen firstScreen;
+    public MainMenu firstScreen;
     public MapScreen mapScreen;
 
     @Override
     public void create() {
         //Gdx.graphics.setWindowedMode(720, 210);
 
-        this.firstScreen = new FirstScreen(this);
+        this.firstScreen = new MainMenu(this);
         this.mapScreen = new MapScreen(this);
         setScreen(firstScreen);
     }
