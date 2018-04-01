@@ -73,7 +73,7 @@ public class UndirGraph implements Graph{
 
             //arr[0] is the number of the vertex, arr[1] and arr[2] is coordinates
             graphMap.put(arr[0], new Vertex());
-            graphMap.get(arr[0]).setCoordinate(arr[1] * 720 / 6531, arr[2] * 427 / 4082);
+            graphMap.get(arr[0]).setCoordinate(arr[1] * 768 / 6531, arr[2] * 592 / 4082);
             graphMap.get(arr[0]).setNumber(arr[0]);
             graphMap.get(arr[0]).setTypeOfRoom(typeOfRoom);
             for(int i = 3; i < count - 1; ++i) {
@@ -255,6 +255,7 @@ public class UndirGraph implements Graph{
         }
 
         Integer buf = prev.get(b);
+
         ArrayList<Integer> bufList = new ArrayList<Integer>();
         while(buf != null) {
             bufList.add(buf);
@@ -265,6 +266,8 @@ public class UndirGraph implements Graph{
             path.add(graphMap.get(bufList.get(i)));
         }
         path.add(graphMap.get(b));
+        if(path.size() == 1  &&  a != b)
+            return searchPath(b, a);
         return path;
     }
 

@@ -93,9 +93,10 @@ public class PointSearchScreen extends Stage implements Screen {
 
         pointShape.rectLine(game.getGraph().getVertex(point).getX(),
                 game.getGraph().getVertex(point).getY() + game.getHeightScreen() / 6,
-                game.getGraph().getVertex(point).getX() + 10,
-                game.getGraph().getVertex(point).getY() + game.getHeightScreen() / 6 + 10,
+                game.getGraph().getVertex(point).getX() + 8,
+                game.getGraph().getVertex(point).getY() + game.getHeightScreen() / 6 + 8,
                 10);
+
         pointShape.end();
     }
 

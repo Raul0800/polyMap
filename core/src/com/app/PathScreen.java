@@ -28,6 +28,7 @@ public class PathScreen extends Stage implements Screen{
     public MyGame game;
     private boolean isPressed;
     private Texture map = new Texture("1_plan_main.png");
+    private ShapeRenderer line;
 
     private int firstPoint, secondPoint;
 
@@ -58,7 +59,7 @@ public class PathScreen extends Stage implements Screen{
         });
         stage.addActor(button);
 
-
+        line = new ShapeRenderer();
     }
 
     @Override
@@ -76,6 +77,12 @@ public class PathScreen extends Stage implements Screen{
         stage.getBatch().draw(map, 0, game.getHeightScreen()/6, game.getWidthScreen(), game.getHeightScreen()/2);
         stage.getBatch().end();
 
+        try {
+            drawPath();
+        }
+        catch (UndirGraph.NoSuchVertexException ex) {
+            System.out.println("no vertex");
+        }
 
         stage.act(delta);
         stage.draw();
@@ -85,6 +92,31 @@ public class PathScreen extends Stage implements Screen{
     public void setFirstPoint (int point) { firstPoint = point; }
     public void setSecondPoint (int point) { secondPoint = point; }
 
+
+    void drawPath () {
+
+        if (!(game.getGraph().hasVertex(firstPoint) && game.getGraph().hasVertex(secondPoint))) {
+            throw new UndirGraph.NoSuchVertexException("no vertex");
+        }
+
+        line.begin(ShapeRenderer.ShapeType.Filled);
+        line.setColor(Color.RED);
+
+        ArrayList<Vertex> path = game.getGraph().searchPath(firstPoint, secondPoint);
+
+        for(int i = 0; i < path.size() - 1; i++) {
+            line.rectLine(path.get(i).getX(),     path.get(i).getY() + game.getHeightScreen() / 6,
+                          path.get(i + 1).getX(), path.get(i + 1).getY() + game.getHeightScreen() / 6,
+                    5);
+        }
+        line.rectLine(path.get(0).getX(),     path.get(0).getY() + game.getHeightScreen() / 6,
+                  path.get(0).getX() + 8, path.get(0).getY() + game.getHeightScreen() / 6 + 8,
+                10);
+        line.rectLine(path.get(path.size() - 1).getX(),     path.get(path.size() - 1).getY() + game.getHeightScreen() / 6,
+                  path.get(path.size() - 1).getX() + 8, path.get(path.size() - 1).getY() + game.getHeightScreen() / 6 + 8,
+                10);
+        line.end();
+    }
 
     @Override
     public void resize(int width, int height) {
