@@ -49,6 +49,7 @@ public class MapScreen extends Stage implements Screen {
                     dispose();
                     Gdx.input.setOnscreenKeyboardVisible(false);
                     stage.unfocusAll();
+                    textFieldSearch.setText("");
                     game.setScreen(game.firstScreen);
                 }
             }
@@ -73,6 +74,7 @@ public class MapScreen extends Stage implements Screen {
                     Gdx.input.setOnscreenKeyboardVisible(false);
                     game.pointSearchScreen.setPoint(Integer.parseInt(textFieldSearch.getText()));
                     stage.unfocusAll();
+                    textFieldSearch.setText("");
                     game.setScreen(game.pointSearchScreen);
                 }
             }
@@ -101,7 +103,6 @@ public class MapScreen extends Stage implements Screen {
         stage.getBatch().end();
 
         stage.act(delta);
-        stage.draw();
         stage.draw();
     }
 

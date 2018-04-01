@@ -72,7 +72,7 @@ public class PointSearchScreen extends Stage implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         stage.getBatch().begin();
-        stage.getBatch().draw(map, 0, game.getHeightScreen()/6, game.getWidthScreen(), game.getHeightScreen()/2/*500*/);
+        stage.getBatch().draw(map, 0, game.getHeightScreen()/6, game.getWidthScreen(), game.getHeightScreen()/2);
         stage.getBatch().end();
 
         drawPoint();
@@ -93,9 +93,10 @@ public class PointSearchScreen extends Stage implements Screen {
 
         pointShape.rectLine(game.getGraph().getVertex(point).getX(),
                 game.getGraph().getVertex(point).getY() + game.getHeightScreen() / 6,
-                game.getGraph().getVertex(point).getX() + 10,
-                game.getGraph().getVertex(point).getY() + game.getHeightScreen() / 6 + 10,
+                game.getGraph().getVertex(point).getX() + 8,
+                game.getGraph().getVertex(point).getY() + game.getHeightScreen() / 6 + 8,
                 10);
+
         pointShape.end();
     }
 

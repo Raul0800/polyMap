@@ -19,7 +19,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
  * Created by UltraBook Samsung on 25.03.2018.
  */
 
-public class InputABScreen extends Stage implements Screen, GestureDetector.GestureListener {
+public class InputABScreen extends Stage implements Screen {
 
     private Stage stage;
     public MyGame game;
@@ -56,8 +56,14 @@ public class InputABScreen extends Stage implements Screen, GestureDetector.Gest
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (searchButtonPressed) {
-                    game.pathScreen.setFirstPoint(Integer.parseInt(tfFirstPoint.getText()));
-                    game.pathScreen.setSecondPoint(Integer.parseInt(tfSecondPoint.getText()));
+                    try {
+                        game.pathScreen.setFirstPoint(Integer.parseInt(tfFirstPoint.getText()));
+                        game.pathScreen.setSecondPoint(Integer.parseInt(tfSecondPoint.getText()));
+                    }
+                    catch (NumberFormatException ignored) {
+                        return;
+                    }
+
                     game.setScreen(game.pathScreen);
                 }
             }
@@ -80,6 +86,8 @@ public class InputABScreen extends Stage implements Screen, GestureDetector.Gest
                 if (backButtonPressed) {
                     Gdx.input.setOnscreenKeyboardVisible(false);
                     stage.unfocusAll();
+                    tfFirstPoint.setText("");
+                    tfSecondPoint.setText("");
                     game.setScreen(game.firstScreen);
 
                 }
@@ -127,52 +135,6 @@ public class InputABScreen extends Stage implements Screen, GestureDetector.Gest
 
     @Override
     public void hide() {
-
-    }
-
-    @Override
-    public boolean touchDown(float x, float y, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean tap(float x, float y, int count, int button) {
-        Gdx.input.setOnscreenKeyboardVisible(false);
-        return false;
-    }
-
-    @Override
-    public boolean longPress(float x, float y) {
-        return false;
-    }
-
-    @Override
-    public boolean fling(float velocityX, float velocityY, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean pan(float x, float y, float deltaX, float deltaY) {
-        return false;
-    }
-
-    @Override
-    public boolean panStop(float x, float y, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean zoom(float initialDistance, float distance) {
-        return false;
-    }
-
-    @Override
-    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-        return false;
-    }
-
-    @Override
-    public void pinchStop() {
 
     }
 }
