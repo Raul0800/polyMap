@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 
 public class MyGame extends Game {
 
-    public FirstScreen firstScreen;
+    public MainScreen mainScreen;
     public SecondScreen secondScreen;
     public InputABScreen inputABScreen;
     public PathScreen pathScreen;
@@ -24,13 +24,13 @@ public class MyGame extends Game {
         widthScreen = Gdx.app.getGraphics().getWidth();
         heightScreen = Gdx.app.getGraphics().getHeight();
 
-        this.firstScreen = new FirstScreen(this);
         this.secondScreen = new SecondScreen(this);
         this.inputABScreen = new InputABScreen(this);
         this.pathScreen = new PathScreen(this);
         this.mapScreen = new MapScreen(this);
         this.pointSearchScreen = new PointSearchScreen(this);
-        setScreen(firstScreen);
+        this.mainScreen = new MainScreen(this);
+        setScreen(mainScreen);
 
         FileHandle handle = Gdx.files.internal("graph.csv");
         graph = new UndirGraph(handle.readString());

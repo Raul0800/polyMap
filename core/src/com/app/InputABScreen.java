@@ -80,7 +80,7 @@ public class InputABScreen extends Stage implements Screen, GestureDetector.Gest
                 if (backButtonPressed) {
                     Gdx.input.setOnscreenKeyboardVisible(false);
                     stage.unfocusAll();
-                    game.setScreen(game.firstScreen);
+                    game.setScreen(game.mainScreen);
 
                 }
             }

@@ -27,7 +27,7 @@ public class PathScreen extends Stage implements Screen{
     private Stage stage;
     public MyGame game;
     private boolean isPressed;
-    private Texture map = new Texture("I_plan_Draft_Final.png");
+    private Texture map = new Texture("1_plan_main.png");
 
     private int firstPoint, secondPoint;
 

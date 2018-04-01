@@ -25,7 +25,7 @@ import javax.xml.soap.Text;
 public class PointSearchScreen extends Stage implements Screen {
     private Stage stage;
     public MyGame game;
-    public Texture map = new Texture("I_plan_Draft_Final.png");
+    public Texture map = new Texture("1_plan_main.png");
 
     private boolean backButtonPressed;
 
@@ -72,7 +72,7 @@ public class PointSearchScreen extends Stage implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         stage.getBatch().begin();
-        stage.getBatch().draw(map, 0, game.getHeightScreen()/6, game.getWidthScreen(), game.getHeightScreen()/2/*500*/);
+        stage.getBatch().draw(map, 0, game.getHeightScreen()/6, game.getWidthScreen(), game.getHeightScreen()/2);
         stage.getBatch().end();
 
         drawPoint();

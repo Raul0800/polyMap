@@ -22,7 +22,7 @@ public class MapScreen extends Stage implements Screen {
     private Stage stage;
     public MyGame game;
     private TextField textFieldSearch;
-    public Texture map = new Texture("I_plan_Draft_Final.png");
+    public Texture map = new Texture("1_plan_main.png");
     private boolean backButtonPressed, searchButtonPressed;
 
     MapScreen(final MyGame game) {
@@ -49,7 +49,7 @@ public class MapScreen extends Stage implements Screen {
                     dispose();
                     Gdx.input.setOnscreenKeyboardVisible(false);
                     stage.unfocusAll();
-                    game.setScreen(game.firstScreen);
+                    game.setScreen(game.mainScreen);
                 }
             }
 
