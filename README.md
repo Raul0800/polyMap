@@ -55,7 +55,7 @@ polyMap android application
   b) Android SDK Build-Tools (для создания проекта использовалась верся 27.0.3)   
   c) Android SDK Platform (для создания проекта использовалась верся 27)    
   d) SDK Patch Applier v4   
-  e) Sources for Android 27   
+  e) Sources for Android 22   
 2) Android Virtual Device
 3) IDE Andoid Studio
 
