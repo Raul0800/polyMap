@@ -102,16 +102,19 @@ public class PathScreen extends Stage implements Screen{
         line.begin(ShapeRenderer.ShapeType.Filled);
         line.setColor(Color.RED);
 
-
         ArrayList<Vertex> path = game.getGraph().searchPath(firstPoint, secondPoint);
 
-        System.out.println("here " + path.size());
         for(int i = 0; i < path.size() - 1; i++) {
-            System.out.println(path.get(i).getNumber() + " " + path.get(i).getX() + " " + path.get(i).getY());
-            line.rectLine(path.get(i).getX(), path.get(i).getY() + game.getHeightScreen() / 6,
-                      path.get(i + 1).getX(), path.get(i + 1).getY() + game.getHeightScreen() / 6,
+            line.rectLine(path.get(i).getX(),     path.get(i).getY() + game.getHeightScreen() / 6,
+                          path.get(i + 1).getX(), path.get(i + 1).getY() + game.getHeightScreen() / 6,
                     5);
         }
+        line.rectLine(path.get(0).getX(),     path.get(0).getY() + game.getHeightScreen() / 6,
+                  path.get(0).getX() + 8, path.get(0).getY() + game.getHeightScreen() / 6 + 8,
+                10);
+        line.rectLine(path.get(path.size() - 1).getX(),     path.get(path.size() - 1).getY() + game.getHeightScreen() / 6,
+                  path.get(path.size() - 1).getX() + 8, path.get(path.size() - 1).getY() + game.getHeightScreen() / 6 + 8,
+                10);
         line.end();
     }
 
