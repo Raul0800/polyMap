@@ -26,9 +26,9 @@ public class MapScreen extends Stage implements Screen {
     public MyGame game;
     private TextField textFieldSearch;
 
-    public Texture map = new Texture("I_plan_Draft_Final.png");//Basement_plan__Final.png
-    public String currImage = new String("I_plan_Draft_Final.png");
-    private boolean backButtonPressed, serchButtonPressed, switchFlButtonPressed;
+    public String currImage = new String("1_plan_main.png");
+    public Texture map = new Texture("1_plan_main.png");
+    private boolean backButtonPressed, searchButtonPressed, switchFlButtonPressed;
 
     MapScreen(final MyGame game) {
         this.game = game;
@@ -68,7 +68,8 @@ public class MapScreen extends Stage implements Screen {
                     dispose();
                     Gdx.input.setOnscreenKeyboardVisible(false);
                     stage.unfocusAll();
-                    game.setScreen(game.firstScreen);
+                    textFieldSearch.setText("");
+                    game.setScreen(game.mainScreen);
                 }
             }
 
@@ -101,13 +102,13 @@ public class MapScreen extends Stage implements Screen {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (switchFlButtonPressed) {
                     dispose();
-                    if (currImage.equals("I_plan_Draft_Final.png")) {
+                    if (currImage.equals("1_plan_main.png")) {
                         map = new Texture("Basement_plan__Final.png");
                         currImage = "Basement_plan__Final.png";
                     }
                     else {
-                        map = new Texture("I_plan_Draft_Final.png");
-                        currImage = "I_plan_Draft_Final.png";
+                        map = new Texture("1_plan_main.png");
+                        currImage = "1_plan_main.png";
                     }
                     switchFlButtonPressed = false;
                     //Gdx.input.setOnscreenKeyboardVisible(false);
@@ -132,17 +133,19 @@ public class MapScreen extends Stage implements Screen {
         searchButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (serchButtonPressed) {
+                if (searchButtonPressed) {
                     dispose();
                     Gdx.input.setOnscreenKeyboardVisible(false);
+                    game.pointSearchScreen.setPoint(Integer.parseInt(textFieldSearch.getText()));
                     stage.unfocusAll();
-                    game.setScreen(game.secondScreen);
+                    textFieldSearch.setText("");
+                    game.setScreen(game.pointSearchScreen);
                 }
             }
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                serchButtonPressed = true;
+                searchButtonPressed = true;
                 return true;
             }
         });
@@ -164,7 +167,6 @@ public class MapScreen extends Stage implements Screen {
         stage.getBatch().end();
 
         stage.act(delta);
-        stage.draw();
         stage.draw();
     }
 

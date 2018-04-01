@@ -49,33 +49,35 @@ public class UndirGraph implements Graph{
 
     /**
      * Construct a graph from a Scanner.
-     * @param sc The scanner.
+     * @param string The scanner.
      */
-    public UndirGraph(java.util.Scanner sc){
-        //Scan the number of vertices in the graph
-        this.n = sc.nextInt();
+    //public UndirGraph(java.util.Scanner sc){
+    public UndirGraph(String string){
+        String typeOfRoom = null;
         this.graphMap = new HashMap<Integer, Vertex>();
-        System.out.print(sc.nextLine());  //Set the scanner to the next line.
+        StringTokenizer strToken = new StringTokenizer(string,"\n");
 
-        while(sc.hasNext()){
-            String input = sc.nextLine();
-            //input = sc.nextLine();
-            StringTokenizer strToken = new StringTokenizer(input);
-            int count = strToken.countTokens();
+        int tokens = strToken.countTokens();
+        for(int k = 0; k < tokens; k++) {
 
-            int[] arr = new int[count];
-            for(int i = 0; i < count; ++i){
-                arr[i] = Integer.parseInt(strToken.nextToken());
+            StringTokenizer strSubToken = new StringTokenizer(strToken.nextToken(),";");
+            int count = strSubToken.countTokens();
+            int[] arr = new int[count - 1];
+            for(int i = 0; i < count; i++){
+                if (i == count - 2) {
+                    typeOfRoom = strSubToken.nextToken();
+                    break;
+                }
+                arr[i] = Integer.parseInt(strSubToken.nextToken());
             }
 
             //arr[0] is the number of the vertex, arr[1] and arr[2] is coordinates
             graphMap.put(arr[0], new Vertex());
-            graphMap.get(arr[0]).setCoordinate(arr[1], arr[2]);
+            graphMap.get(arr[0]).setCoordinate(arr[1] * 768 / 6531, arr[2] * 592 / 4082);
             graphMap.get(arr[0]).setNumber(arr[0]);
-
-            for(int i = 3; i < count; ++i){
+            graphMap.get(arr[0]).setTypeOfRoom(typeOfRoom);
+            for(int i = 3; i < count - 1; ++i) {
                 graphMap.get(arr[0]).addNeighbour(arr[i]);
-                //System.out.println(arr[i]);
             }
         }
         e = edges();
@@ -95,7 +97,7 @@ public class UndirGraph implements Graph{
      * Custom Exception type which flags exceptions due to
      * improper use of 'vertex numbers '.
      */
-    class NoSuchVertexException extends RuntimeException{
+    static class NoSuchVertexException extends RuntimeException{
         public NoSuchVertexException(String no_such_vertex) {
             super(no_such_vertex);
         }
@@ -253,6 +255,7 @@ public class UndirGraph implements Graph{
         }
 
         Integer buf = prev.get(b);
+
         ArrayList<Integer> bufList = new ArrayList<Integer>();
         while(buf != null) {
             bufList.add(buf);
@@ -263,6 +266,8 @@ public class UndirGraph implements Graph{
             path.add(graphMap.get(bufList.get(i)));
         }
         path.add(graphMap.get(b));
+        if(path.size() == 1  &&  a != b)
+            return searchPath(b, a);
         return path;
     }
 

@@ -27,6 +27,11 @@ class Vertex implements Iterable<Integer>{
     private ArrayList<Integer> neighbours;
 
     /**
+     * identifier of room
+     */
+    String typeOfRoom;
+
+    /**
      * No parameter constructor.
      */
     public Vertex(){
@@ -35,7 +40,7 @@ class Vertex implements Iterable<Integer>{
     }
 
     public void setNumber(int number) { this.number = number; }
-
+    public void setTypeOfRoom (String typeOfRoom) { this.typeOfRoom = typeOfRoom; }
     /**
      * Copy a vertex.(Deep copy)
      * @param rhs The vertex to copy from.
@@ -69,6 +74,7 @@ class Vertex implements Iterable<Integer>{
      */
     public int getX() { return this.x; }
     public int getY() { return this.y; }
+    public String getTypeOfRoom() { return this.typeOfRoom; }
 
     /**
      * Remove a vertex from the list of neighbor.
@@ -129,4 +135,6 @@ class Vertex implements Iterable<Integer>{
     public void printInfo() {
         System.out.println("Vertex " + number + ": (" + x + "; " + y + "). Neighbours : " + neighbours);
     }
+
+    int getNumber() { return number; }
 }
