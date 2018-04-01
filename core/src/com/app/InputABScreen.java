@@ -2,7 +2,11 @@ package com.app;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -36,6 +40,22 @@ public class InputABScreen extends Stage implements Screen, GestureDetector.Gest
         Gdx.input.setInputProcessor(stage);
 
         Skin mySkin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+        //Change colour
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.GREEN);
+        pixmap.fill();
+        BitmapFont myFont = new BitmapFont();
+        myFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        myFont.getData().setScale(2,2);
+        mySkin.add("green", new Texture(pixmap));
+        mySkin.add("default", myFont);//new BitmapFont());
+
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.up = mySkin.newDrawable("green", new Color((float)0.42, (float)0.71, (float)0.27, 1));
+        textButtonStyle.font = mySkin.getFont("default");
+        mySkin.add("default", textButtonStyle);
+
+
 
         //Text Fields for two points
         tfFirstPoint = new TextField("", mySkin);

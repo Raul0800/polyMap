@@ -1,7 +1,7 @@
 {
   com.badlogic.gdx.graphics.g2d.BitmapFont: {
     font: {
-      file: font-export.fnt
+      file: font-big-export.fnt
     }
     font-big: {
       file: font-big-export.fnt
@@ -32,6 +32,12 @@
       b: 1
       a: 1
     }
+    green: {
+      r: 0
+      g: 1
+      b: 0
+      a: 1
+    }  
   }
   com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
     pale-blue: {
@@ -52,6 +58,15 @@
         a: 1
       }
     }
+    green: {
+      name: white
+      color: {
+        r: 0
+        g: 1
+        b: 0
+        a: 1
+      }
+    }  
   }
   com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
     default: {
@@ -88,6 +103,7 @@
       font: font-big
       up: button
       down: button-down
+    
     }
   }
   com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
@@ -187,7 +203,7 @@
       fontColor: black
       background: textfield
       cursor: black
-      selection: pale-blue
+      selection: green
     }
   }
   com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
