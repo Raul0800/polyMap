@@ -33,6 +33,8 @@ public class InputABScreen extends Stage implements Screen {
     private TextField tfFirstPoint;
     private TextField tfSecondPoint;
 
+    BitmapFont pointFont;
+
     InputABScreen(final MyGame game) {
 
         this.game = game;
@@ -44,11 +46,16 @@ public class InputABScreen extends Stage implements Screen {
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.GREEN);
         pixmap.fill();
-        BitmapFont myFont = new BitmapFont();
-        myFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        myFont.getData().setScale(2,2);
+
+        BitmapFont buttonFont = new BitmapFont();
+        buttonFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        buttonFont.getData().setScale(2,2);
         mySkin.add("green", new Texture(pixmap));
-        mySkin.add("default", myFont);//new BitmapFont());
+        mySkin.add("default", buttonFont);//new BitmapFont());
+
+        pointFont = new BitmapFont();
+        pointFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        pointFont.getData().setScale(7,7);
 
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
         textButtonStyle.up = mySkin.newDrawable("green", new Color((float)0.42, (float)0.71, (float)0.27, 1));
@@ -56,14 +63,13 @@ public class InputABScreen extends Stage implements Screen {
         mySkin.add("default", textButtonStyle);
 
 
-
         //Text Fields for two points
         tfFirstPoint = new TextField("", mySkin);
         tfSecondPoint = new TextField("", mySkin);
-        tfFirstPoint.setPosition(50, game.getHeightScreen() - 300);
-        tfSecondPoint.setPosition(50, game.getHeightScreen() - 450);
-        tfFirstPoint.setSize(game.getWidthScreen() - 100, 100);
-        tfSecondPoint.setSize(game.getWidthScreen() - 100, 100);
+        tfFirstPoint.setPosition(150, game.getHeightScreen() - 300);
+        tfSecondPoint.setPosition(150, game.getHeightScreen() - 450);
+        tfFirstPoint.setSize(game.getWidthScreen() - 200, 100);
+        tfSecondPoint.setSize(game.getWidthScreen() - 200, 100);
 
         stage.addActor(tfFirstPoint);
         stage.addActor(tfSecondPoint);
@@ -72,7 +78,6 @@ public class InputABScreen extends Stage implements Screen {
         Button searchButton = new TextButton("SEARCH >", mySkin, "default");
         searchButton.setSize(game.getWidthScreen(), 150);
         searchButton.setPosition(0, game.getHeightScreen() - 700);
-
         searchButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -80,6 +85,8 @@ public class InputABScreen extends Stage implements Screen {
                     try {
                         game.pathScreen.setFirstPoint(Integer.parseInt(tfFirstPoint.getText()));
                         game.pathScreen.setSecondPoint(Integer.parseInt(tfSecondPoint.getText()));
+                        Gdx.input.setOnscreenKeyboardVisible(false);
+                        stage.unfocusAll();
                     }
                     catch (NumberFormatException ignored) {
                         return;
@@ -135,6 +142,12 @@ public class InputABScreen extends Stage implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        getBatch().begin();
+        pointFont.draw(getBatch(), "A :", 15, game.getHeightScreen() - 200);
+        pointFont.draw(getBatch(), "B :", 15, game.getHeightScreen() - 350);
+        getBatch().end();
+
         stage.act(delta);
         stage.draw();
     }
