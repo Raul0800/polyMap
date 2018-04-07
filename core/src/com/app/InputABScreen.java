@@ -72,6 +72,7 @@ public class InputABScreen extends Stage implements Screen {
         Button searchButton = new TextButton("SEARCH >", mySkin, "default");
         searchButton.setSize(game.getWidthScreen(), 150);
         searchButton.setPosition(0, game.getHeightScreen() - 700);
+
         searchButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
