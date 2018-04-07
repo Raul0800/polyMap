@@ -91,7 +91,6 @@ public class InputABScreen extends Stage implements Screen {
                     catch (NumberFormatException ignored) {
                         return;
                     }
-
                     game.setScreen(game.pathScreen);
                 }
             }
