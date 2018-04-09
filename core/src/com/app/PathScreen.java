@@ -1,6 +1,10 @@
 package com.app;
 
 import com.badlogic.gdx.Gdx;
+
+import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.input.GestureDetector.GestureListener;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -8,8 +12,12 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -20,25 +28,38 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.ArrayList;
 
+import static java.lang.Math.abs;
+
 /**
  * Created by UltraBook Samsung on 26.03.2018.
  */
 
-public class PathScreen extends Stage implements Screen{
-
+public class PathScreen extends Stage implements Screen,GestureListener {
+    private SpriteBatch batch;
+    private Sprite sprite;
+    private  int widthMapPict;
+    private int heightMapPict;
+    private  float positionMapW, positionMapH;
+    private  int stateWidthScreen,stateHeightScreen;
+    private  float statePositionW,statePositionH,stateWMap,stateHMap;
+    InputMultiplexer inputMultiplexer;
+    public String currImage = new String("1_plan_main.png");
     private Stage stage;
     public MyGame game;
     private boolean isPressed;
-    private Texture map = new Texture("1_plan_main.png");
+    private Texture map ;//= new Texture("1_plan_main.png");
     private ShapeRenderer line;
-
     private int firstPoint, secondPoint;
 
     PathScreen(final MyGame game) {
+        stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
+        stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
+        heightMapPict = heightMapPict / 2;
+        statePositionW = positionMapW = 0;
+        statePositionH = positionMapH = heightMapPict/3;
 
         this.game = game;
         stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
         Skin mySkin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         //Change colour
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
@@ -54,6 +75,7 @@ public class PathScreen extends Stage implements Screen{
         textButtonStyle.up = mySkin.newDrawable("green", new Color((float)0.42, (float)0.71, (float)0.27, 1));
         textButtonStyle.font = mySkin.getFont("default");
         mySkin.add("default", textButtonStyle);
+
 
         // Text Button "BACK"
         Button button = new TextButton("< BACK", mySkin, "default");
@@ -75,25 +97,32 @@ public class PathScreen extends Stage implements Screen{
         });
         stage.addActor(button);
 
-        line = new ShapeRenderer();
     }
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        line = new ShapeRenderer();
+        map = new Texture(currImage);
+        batch = new SpriteBatch();
+        sprite = new Sprite(map);
+        stateHMap = heightMapPict;
+        stateWMap = widthMapPict;
+        sprite.setSize(widthMapPict, heightMapPict);
+        sprite.setPosition(positionMapW, positionMapH);
+        inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(stage);
+        inputMultiplexer.addProcessor(new GestureDetector(this));
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
     public void render(float delta) {
-
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        stage.getBatch().begin();
-        stage.getBatch().draw(map, 0, game.getHeightScreen()/6, game.getWidthScreen(), game.getHeightScreen()/2);
-        stage.getBatch().end();
-
         try {
+            batch.begin();
+            sprite.draw(batch);
+            batch.end();
             drawPath();
         }
         catch (UndirGraph.NoSuchVertexException ex) {
@@ -110,26 +139,31 @@ public class PathScreen extends Stage implements Screen{
 
 
     void drawPath () {
-
+        System.out.println("SUB: " + (stateWMap - widthMapPict));
         if (!(game.getGraph().hasVertex(firstPoint) && game.getGraph().hasVertex(secondPoint))) {
             throw new UndirGraph.NoSuchVertexException("no vertex");
         }
 
         line.begin(ShapeRenderer.ShapeType.Filled);
         line.setColor(Color.RED);
-
         ArrayList<Vertex> path = game.getGraph().searchPath(firstPoint, secondPoint);
 
         for(int i = 0; i < path.size() - 1; i++) {
-            line.rectLine(path.get(i).getX(),     path.get(i).getY() + game.getHeightScreen() / 6,
-                          path.get(i + 1).getX(), path.get(i + 1).getY() + game.getHeightScreen() / 6,
+            line.rectLine(path.get(i).getX()+positionMapW-(stateWMap - widthMapPict),
+                    path.get(i).getY() + positionMapH + (stateHMap - heightMapPict),
+                          path.get(i + 1).getX()+positionMapW - (stateWMap - widthMapPict),
+                    path.get(i + 1).getY() +positionMapH + (stateHMap - heightMapPict),
                     5);
         }
-        line.rectLine(path.get(0).getX(),     path.get(0).getY() + game.getHeightScreen() / 6,
-                  path.get(0).getX() + 8, path.get(0).getY() + game.getHeightScreen() / 6 + 8,
+        line.rectLine(path.get(0).getX()+positionMapW,
+                path.get(0).getY() + positionMapH,
+                  path.get(0).getX()+positionMapW + 8,
+                path.get(0).getY() +positionMapH + 8,
                 10);
-        line.rectLine(path.get(path.size() - 1).getX(),     path.get(path.size() - 1).getY() + game.getHeightScreen() / 6,
-                  path.get(path.size() - 1).getX() + 8, path.get(path.size() - 1).getY() + game.getHeightScreen() / 6 + 8,
+        line.rectLine(path.get(path.size() - 1).getX()+positionMapW,
+                path.get(path.size() - 1).getY() + positionMapH,
+                  path.get(path.size() - 1).getX()+positionMapW + 8,
+                path.get(path.size() - 1).getY() + positionMapH + 8,
                 10);
         line.end();
     }
@@ -154,4 +188,70 @@ public class PathScreen extends Stage implements Screen{
 
     }
 
+    @Override
+    public boolean touchDown(float x, float y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean tap(float x, float y, int count, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean longPress(float x, float y) {
+        return false;
+    }
+
+    @Override
+    public boolean fling(float velocityX, float velocityY, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean pan(float x, float y, float deltaX, float deltaY) {
+        //System.out.println("PAAAAAAAAAAAAAAAAAAAAAAAAAAAN:");
+        positionMapH = positionMapH - deltaY;
+        //System.out.println("abs(widthMapPict - stateWidthScreen): " + abs(widthMapPict - stateWidthScreen) + "\n");
+        //System.out.println("abs(positionMapW + deltaX): " + abs(positionMapW + deltaX));
+        positionMapW = positionMapW + deltaX;
+        sprite.setPosition(positionMapW, positionMapH);
+        return true;
+    }
+
+    @Override
+    public boolean panStop(float x, float y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean zoom(float initialDistance, float distance) {
+        final int coeffForScale = 10;
+        if (initialDistance < distance) {
+            //расширять
+            widthMapPict += coeffForScale;
+            heightMapPict += coeffForScale;
+
+        }
+        if (initialDistance >= distance && widthMapPict > stateWidthScreen)
+        {
+            //сужать
+            widthMapPict -= coeffForScale;
+            heightMapPict -= coeffForScale;
+        }
+        sprite.setSize(widthMapPict, heightMapPict);
+        sprite.setPosition(positionMapW,positionMapH);
+
+        return true;
+    }
+
+    @Override
+    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+        return false;
+    }
+
+    @Override
+    public void pinchStop() {
+
+    }
 }
