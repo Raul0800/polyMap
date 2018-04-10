@@ -1,5 +1,10 @@
 package com.app;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.input.GestureDetector.GestureListener;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -8,6 +13,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -24,10 +30,21 @@ import javax.xml.soap.Text;
  * Created by UltraBook Samsung on 27.03.2018.
  */
 
-public class PointSearchScreen extends Stage implements Screen {
+public class PointSearchScreen extends Stage implements Screen,GestureListener {
+    private SpriteBatch batch;
+    private Sprite sprite;
+    private  int widthMapPict;//ширина картинки карты
+    private int heightMapPict;//высота картинки карты
+    private  float positionMapW, positionMapH;//позиция по У картинки карты
+    private  int stateWidthScreen,stateHeightScreen;//позиция по Х картинки карты
+    //все переменные,описанные выше, изменяются при масштабировании
+    private  float statePositionW,statePositionH,stateWMap,stateHMap;// неизменная позиция и размеры картинки
+    InputMultiplexer inputMultiplexer;
+    public String currImage = new String("1_plan_main.png");//название картинки
+
     private Stage stage;
     public MyGame game;
-    public Texture map = new Texture("1_plan_main.png");
+    public Texture map;
 
     private boolean backButtonPressed;
 
@@ -35,9 +52,14 @@ public class PointSearchScreen extends Stage implements Screen {
     ShapeRenderer pointShape;
 
     PointSearchScreen(final MyGame game) {
+        stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
+        stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
+        heightMapPict = heightMapPict / 2;
+        statePositionW = positionMapW = 0;
+        statePositionH = positionMapH = heightMapPict/3;
+
         this.game = game;
         stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
 
         //Change colour
@@ -80,7 +102,17 @@ public class PointSearchScreen extends Stage implements Screen {
     }
 
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        map = new Texture(currImage);
+        batch = new SpriteBatch();
+        sprite = new Sprite(map);
+        stateHMap = heightMapPict;
+        stateWMap = widthMapPict;
+        sprite.setSize(widthMapPict, heightMapPict);
+        sprite.setPosition(positionMapW, positionMapH);
+        inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(stage);
+        inputMultiplexer.addProcessor(new GestureDetector(this));
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
@@ -88,10 +120,10 @@ public class PointSearchScreen extends Stage implements Screen {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        stage.getBatch().begin();
-        stage.getBatch().draw(map, 0, game.getHeightScreen()/6, game.getWidthScreen(), game.getHeightScreen()/2);
-        stage.getBatch().end();
-
+        batch.begin();
+        //отрисовка карты через структуру
+        sprite.draw(batch);
+        batch.end();
         drawPoint();
 
         stage.act(delta);
@@ -101,6 +133,8 @@ public class PointSearchScreen extends Stage implements Screen {
     public void setPoint (int point) { this.point = point; }
 
     public void drawPoint() {
+        float scaleX = widthMapPict/stateWMap;
+        float scaleY = heightMapPict/stateHMap;
 
         if(! game.getGraph().hasVertex(point) ) {
             throw new UndirGraph.NoSuchVertexException("no vertex\n");
@@ -108,10 +142,10 @@ public class PointSearchScreen extends Stage implements Screen {
         pointShape.begin(ShapeRenderer.ShapeType.Filled);
         pointShape.setColor(Color.RED);
 
-        pointShape.rectLine(game.getGraph().getVertex(point).getX(),
-                game.getGraph().getVertex(point).getY() + game.getHeightScreen() / 6,
-                game.getGraph().getVertex(point).getX() + 8,
-                game.getGraph().getVertex(point).getY() + game.getHeightScreen() / 6 + 8,
+        pointShape.rectLine(game.getGraph().getVertex(point).getX()*scaleX+positionMapW,
+                game.getGraph().getVertex(point).getY()*scaleY + positionMapH,
+                game.getGraph().getVertex(point).getX()*scaleX + 8 + positionMapW,
+                game.getGraph().getVertex(point).getY()*scaleY + positionMapH,
                 10);
 
         pointShape.end();
@@ -137,5 +171,70 @@ public class PointSearchScreen extends Stage implements Screen {
     public void dispose() {
     }
 
+    @Override
+    public boolean touchDown(float x, float y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean tap(float x, float y, int count, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean longPress(float x, float y) {
+        return false;
+    }
+
+    @Override
+    public boolean fling(float velocityX, float velocityY, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean pan(float x, float y, float deltaX, float deltaY) {
+        //System.out.println("PAAAAAAAAAAAAAAAAAAAAAAAAAAAN:");
+        positionMapH = positionMapH - deltaY;
+        //System.out.println("abs(widthMapPict - stateWidthScreen): " + abs(widthMapPict - stateWidthScreen) + "\n");
+        //System.out.println("abs(positionMapW + deltaX): " + abs(positionMapW + deltaX));
+        positionMapW = positionMapW + deltaX;
+        sprite.setPosition(positionMapW, positionMapH);
+        return true;
+    }
+
+    @Override
+    public boolean panStop(float x, float y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean zoom(float initialDistance, float distance) {
+        final int coeffForScale = 10;
+        if (initialDistance < distance) {
+            //расширять
+            widthMapPict += coeffForScale;
+            heightMapPict += coeffForScale;
+
+        }
+        if (initialDistance >= distance && widthMapPict > stateWidthScreen)
+        {
+            //сужать
+            widthMapPict -= coeffForScale;
+            heightMapPict -= coeffForScale;
+        }
+        sprite.setSize(widthMapPict, heightMapPict);
+        //  sprite.setPosition(positionMapW,positionMapH);
+        return true;
+    }
+
+    @Override
+    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+        return false;
+    }
+
+    @Override
+    public void pinchStop() {
+
+    }
 }
 
