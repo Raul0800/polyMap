@@ -37,13 +37,14 @@ import static java.lang.Math.abs;
 public class PathScreen extends Stage implements Screen,GestureListener {
     private SpriteBatch batch;
     private Sprite sprite;
-    private  int widthMapPict;
-    private int heightMapPict;
-    private  float positionMapW, positionMapH;
-    private  int stateWidthScreen,stateHeightScreen;
-    private  float statePositionW,statePositionH,stateWMap,stateHMap;
+    private  int widthMapPict;//ширина картинки карты
+    private int heightMapPict;//высота картинки карты
+    private  float positionMapW, positionMapH;//позиция по У картинки карты
+    private  int stateWidthScreen,stateHeightScreen;//позиция по Х картинки карты
+    //все переменные,описанные выше, изменяются при масштабировании
+    private  float statePositionW,statePositionH,stateWMap,stateHMap;// неизменная позиция и размеры картинки
     InputMultiplexer inputMultiplexer;
-    public String currImage = new String("1_plan_main.png");
+    public String currImage = new String("1_plan_main.png");//название картинки
     private Stage stage;
     public MyGame game;
     private boolean isPressed;
@@ -101,6 +102,7 @@ public class PathScreen extends Stage implements Screen,GestureListener {
 
     @Override
     public void show() {
+        //инициализация всех полей происходит в этом методе. При загрузке окна этот метод первый, который вызывается
         line = new ShapeRenderer();
         map = new Texture(currImage);
         batch = new SpriteBatch();
@@ -121,6 +123,7 @@ public class PathScreen extends Stage implements Screen,GestureListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         try {
             batch.begin();
+            //отрисовка карты через структуру
             sprite.draw(batch);
             batch.end();
             drawPath();
@@ -147,12 +150,15 @@ public class PathScreen extends Stage implements Screen,GestureListener {
         line.begin(ShapeRenderer.ShapeType.Filled);
         line.setColor(Color.RED);
         ArrayList<Vertex> path = game.getGraph().searchPath(firstPoint, secondPoint);
-
+//103 182
+        //изменила первоночальный вид вывода линии!теперь координаты линии зависят не от экрана, а от положения картинки
+        float countW = stateWMap/widthMapPict,countH = stateHMap/ heightMapPict;
         for(int i = 0; i < path.size() - 1; i++) {
-            line.rectLine(path.get(i).getX()+positionMapW-(stateWMap - widthMapPict),
-                    path.get(i).getY() + positionMapH + (stateHMap - heightMapPict),
-                          path.get(i + 1).getX()+positionMapW - (stateWMap - widthMapPict),
-                    path.get(i + 1).getY() +positionMapH + (stateHMap - heightMapPict),
+
+            line.rectLine(path.get(i).getX()+positionMapW+countW,
+                    path.get(i).getY() + positionMapH+countH,
+                          path.get(i + 1).getX()+positionMapW + countW,
+                    path.get(i + 1).getY() +positionMapH + countH,
                     5);
         }
         line.rectLine(path.get(0).getX()+positionMapW,
