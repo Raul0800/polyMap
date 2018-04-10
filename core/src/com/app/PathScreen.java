@@ -140,9 +140,7 @@ public class PathScreen extends Stage implements Screen,GestureListener {
     public void setFirstPoint (int point) { firstPoint = point; }
     public void setSecondPoint (int point) { secondPoint = point; }
 
-
     void drawPath () {
-        System.out.println("SUB: " + (stateWMap - widthMapPict));
         if (!(game.getGraph().hasVertex(firstPoint) && game.getGraph().hasVertex(secondPoint))) {
             throw new UndirGraph.NoSuchVertexException("no vertex");
         }
@@ -151,25 +149,35 @@ public class PathScreen extends Stage implements Screen,GestureListener {
         line.setColor(Color.RED);
         ArrayList<Vertex> path = game.getGraph().searchPath(firstPoint, secondPoint);
 //103 182
-        //изменила первоночальный вид вывода линии!теперь координаты линии зависят не от экрана, а от положения картинки
-        float countW = stateWMap/widthMapPict,countH = stateHMap/ heightMapPict;
-        for(int i = 0; i < path.size() - 1; i++) {
+        //изменила первоночальный вид вывода линии. Теперь координаты линии зависят не от экрана, а от положения картинки
+        float scaleX = widthMapPict/stateWMap;
+        float scaleY = heightMapPict/stateHMap;
 
-            line.rectLine(path.get(i).getX()+positionMapW+countW,
-                    path.get(i).getY() + positionMapH+countH,
-                          path.get(i + 1).getX()+positionMapW + countW,
-                    path.get(i + 1).getY() +positionMapH + countH,
+        System.out.println("START:");
+        System.out.println("scaleX: " + scaleX);
+        System.out.println("path.get(i).getX(): " + path.get(path.size() - 2).getX());
+        System.out.println("positionMapW: " + positionMapW);
+        System.out.println("path.get(i).getX()+positionMapW: " + path.get(path.size() - 2).getX()+positionMapW);
+        System.out.println("path.get(i).getX()+positionMapW)*scaleX: " +
+                (path.get(path.size() - 2).getX()+positionMapW)*scaleX);
+        System.out.println("END");
+
+        for(int i = 0; i < path.size() - 1; i++) {
+            line.rectLine((path.get(i).getX()*scaleX+positionMapW),
+                    (path.get(i).getY()*scaleY + positionMapH),
+                    (path.get(i + 1).getX()*scaleX+positionMapW),
+                    (path.get(i + 1).getY()*scaleY +positionMapH),
                     5);
         }
-        line.rectLine(path.get(0).getX()+positionMapW,
-                path.get(0).getY() + positionMapH,
-                  path.get(0).getX()+positionMapW + 8,
-                path.get(0).getY() +positionMapH + 8,
+        line.rectLine((path.get(0).getX()*scaleX+positionMapW),
+                (path.get(0).getY()*scaleY + positionMapH),
+                (path.get(0).getX()*scaleX+positionMapW + 8),
+                (path.get(0).getY()*scaleY +positionMapH + 8),
                 10);
-        line.rectLine(path.get(path.size() - 1).getX()+positionMapW,
-                path.get(path.size() - 1).getY() + positionMapH,
-                  path.get(path.size() - 1).getX()+positionMapW + 8,
-                path.get(path.size() - 1).getY() + positionMapH + 8,
+        line.rectLine((path.get(path.size() - 1).getX()*scaleX+positionMapW),
+                (path.get(path.size() - 1).getY()*scaleY + positionMapH),
+                ( path.get(path.size() - 1).getX()*scaleX+positionMapW + 8),
+                (path.get(path.size() - 1).getY()*scaleY + positionMapH + 8),
                 10);
         line.end();
     }
@@ -246,8 +254,7 @@ public class PathScreen extends Stage implements Screen,GestureListener {
             heightMapPict -= coeffForScale;
         }
         sprite.setSize(widthMapPict, heightMapPict);
-        sprite.setPosition(positionMapW,positionMapH);
-
+      //  sprite.setPosition(positionMapW,positionMapH);
         return true;
     }
 
