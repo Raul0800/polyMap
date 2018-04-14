@@ -48,12 +48,6 @@ public class MapScreen extends Stage implements Screen, GestureListener{
     private boolean backButtonPressed, searchButtonPressed, switchFlButtonPressed;
 
     MapScreen(final MyGame game) {
-        stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
-        stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
-        heightMapPict = heightMapPict / 2;
-        statePositionW = positionMapW = 0;
-        statePositionH = positionMapH = heightMapPict/3;
-
 //////////////////////////
         this.game = game;
         stage = new Stage(new ScreenViewport());
@@ -186,6 +180,13 @@ public class MapScreen extends Stage implements Screen, GestureListener{
     }
 
     public void show() {
+        stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
+        stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
+        heightMapPict = heightMapPict / 2;
+        statePositionW = positionMapW = 0;
+        statePositionH = positionMapH = heightMapPict/3;
+
+
         map = new Texture(currImage);
         batch = new SpriteBatch();
         sprite = new Sprite(map);
