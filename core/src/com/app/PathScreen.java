@@ -44,7 +44,7 @@ public class PathScreen extends Stage implements Screen,GestureListener {
     //все переменные,описанные выше, изменяются при масштабировании
     private  float statePositionW,statePositionH,stateWMap,stateHMap;// неизменная позиция и размеры картинки
     InputMultiplexer inputMultiplexer;
-    public String currImage = new String("1_plan_main.png");//название картинки
+    public String currImage = new String("GZ_1.png");//название картинки
     private Stage stage;
     public MyGame game;
     private boolean isPressed;
@@ -152,15 +152,6 @@ public class PathScreen extends Stage implements Screen,GestureListener {
         //изменила первоночальный вид вывода линии. Теперь координаты линии зависят не от экрана, а от положения картинки
         float scaleX = widthMapPict/stateWMap;
         float scaleY = heightMapPict/stateHMap;
-
-        System.out.println("START:");
-        System.out.println("scaleX: " + scaleX);
-        System.out.println("path.get(i).getX(): " + path.get(path.size() - 2).getX());
-        System.out.println("positionMapW: " + positionMapW);
-        System.out.println("path.get(i).getX()+positionMapW: " + path.get(path.size() - 2).getX()+positionMapW);
-        System.out.println("path.get(i).getX()+positionMapW)*scaleX: " +
-                (path.get(path.size() - 2).getX()+positionMapW)*scaleX);
-        System.out.println("END");
 
         for(int i = 0; i < path.size() - 1; i++) {
             line.rectLine((path.get(i).getX()*scaleX+positionMapW),

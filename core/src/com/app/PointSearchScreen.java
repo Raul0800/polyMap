@@ -40,7 +40,7 @@ public class PointSearchScreen extends Stage implements Screen,GestureListener {
     //все переменные,описанные выше, изменяются при масштабировании
     private  float statePositionW,statePositionH,stateWMap,stateHMap;// неизменная позиция и размеры картинки
     InputMultiplexer inputMultiplexer;
-    public String currImage = new String("1_plan_main.png");//название картинки
+    public String currImage = new String("GZ_1.png");//название картинки
 
     private Stage stage;
     public MyGame game;
