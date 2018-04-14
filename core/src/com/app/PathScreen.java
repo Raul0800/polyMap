@@ -99,7 +99,7 @@ public class PathScreen extends Stage implements Screen,GestureListener {
         stage.addActor(button);
 
     }
-
+ 
     @Override
     public void show() {
         //инициализация всех полей происходит в этом методе. При загрузке окна этот метод первый, который вызывается
