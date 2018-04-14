@@ -52,11 +52,6 @@ public class PointSearchScreen extends Stage implements Screen,GestureListener {
     ShapeRenderer pointShape;
 
     PointSearchScreen(final MyGame game) {
-        stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
-        stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
-        heightMapPict = heightMapPict / 2;
-        statePositionW = positionMapW = 0;
-        statePositionH = positionMapH = heightMapPict/3;
 
         this.game = game;
         stage = new Stage(new ScreenViewport());
@@ -102,6 +97,13 @@ public class PointSearchScreen extends Stage implements Screen,GestureListener {
     }
 
     public void show() {
+        //инициализация полей, каждый раз происходит заново, когда открывается заново окно
+        stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
+        stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
+        heightMapPict = heightMapPict / 2;
+        statePositionW = positionMapW = 0;
+        statePositionH = positionMapH = heightMapPict/3;
+
         map = new Texture(currImage);
         batch = new SpriteBatch();
         sprite = new Sprite(map);
