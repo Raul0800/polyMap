@@ -45,7 +45,7 @@ public class PathScreen extends Stage implements Screen,GestureListener {
     private  float statePositionW,statePositionH,stateWMap,stateHMap;// неизменная позиция и размеры картинки
     InputMultiplexer inputMultiplexer;
     public String currImage = new String("GZ_1.png");//название картинки
-    private Stage stage;
+    private Stage stage; 
     public MyGame game;
     private boolean isPressed;
     private Texture map ;//= new Texture("1_plan_main.png");
