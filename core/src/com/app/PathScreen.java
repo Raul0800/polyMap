@@ -239,6 +239,12 @@ public class PathScreen extends Stage implements Screen,GestureListener {
     }
 
     @Override
+    public void dispose() {
+        batch.dispose();
+        map.dispose();
+    }
+
+    @Override
     public boolean zoom(float initialDistance, float distance) {
         final int coeffForScale = 10;
         if (initialDistance < distance) {

@@ -43,10 +43,24 @@ public class MapScreen extends Stage implements Screen, GestureListener{
     private Stage stage;
     public MyGame game;
     private TextField textFieldSearch;
-    public String currImage = new String("1_plan_main.png");
+    public String currImage = new String("GZ_1.png");
     public Texture map;
     private boolean backButtonPressed, searchButtonPressed, switchFlButtonPressed;
 
+    void initPicture(String currImage){
+        stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
+        stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
+        heightMapPict = heightMapPict / 2;
+        statePositionW = positionMapW = 0;
+        statePositionH = positionMapH = heightMapPict/3;
+
+        map = new Texture(currImage);
+        batch = new SpriteBatch();
+        sprite = new Sprite(map);
+        sprite.setSize(widthMapPict, heightMapPict);
+        sprite.setPosition(positionMapW, positionMapH);
+
+    }
     MapScreen(final MyGame game) {
 //////////////////////////
         this.game = game;
@@ -98,48 +112,28 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         });
         stage.addActor(backButton);
 
-        //Text Button "switching floors"
-        //TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        //textButtonStyle.font = ;
-        //textButtonStyle.fontColor = Color.WHITE;
-        //textButtonStyle.downFontColor = Color.BLACK;
-        //Optional color to toggle between when pressed
-        //textButtonStyle.checkedFontColor = Color.GREEN;
-        //final TextButton textButton = new TextButton("Text", textButtonStyle);
+        //Обозначение для ниже стоящих кнопок.
+        TextButton nameOfSwitchFlButton = new TextButton("Floors", skin, "default");
+        nameOfSwitchFlButton.setSize(100, 50);
+        nameOfSwitchFlButton.setPosition(game.getWidthScreen() - 200, game.getHeightScreen() - 400);
+        stage.addActor(nameOfSwitchFlButton);
 
-        //Skin skin = new Skin();
-
-        //labelToolTip = new TextButton("TEST", skin);
-
-        TextButton switchFlButton = new TextButton("<>", skin, "default");
-        switchFlButton.setSize(100, 100);
-        switchFlButton.setPosition(game.getWidthScreen() - 220, game.getHeightScreen() - 450);
-        switchFlButton.addListener(new InputListener() {
+        //Массив кнопок отвечающих за выбор этажа. Создано в виде массива с возможностью дальнейшнего
+        //расширения.
+        TextButton []switchFlButton = new TextButton[2];
+        switchFlButton[0] = new TextButton("0", skin, "default");
+        switchFlButton[0].setSize(100, 50);
+        switchFlButton[0].setPosition(game.getWidthScreen() - 200, game.getHeightScreen() - 451);
+        switchFlButton[0].addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (switchFlButtonPressed) {
-                    dispose();
-                    if (currImage.equals("1_plan_main.png")) {
-                        map = new Texture("Basement_plan__Final.png");
-                        currImage = "Basement_plan__Final.png";
-                        batch = new SpriteBatch();
-                        sprite = new Sprite(map);
-                        sprite.setSize(widthMapPict, heightMapPict);
-                        sprite.setPosition(positionMapW, positionMapH);
-                    }
-                    else {
-                        map = new Texture("1_plan_main.png");
-                        currImage = "1_plan_main.png";
-                        batch = new SpriteBatch();
-                        sprite = new Sprite(map);
-                        sprite.setSize(widthMapPict, heightMapPict);
-                        sprite.setPosition(positionMapW, positionMapH);
-
+                    if (!currImage.equals("GZ_0.png")) {
+                        dispose();
+                        currImage = "GZ_0.png";
+                        initPicture(currImage);
                     }
                     switchFlButtonPressed = false;
-                    //Gdx.input.setOnscreenKeyboardVisible(false);
-                    //stage.unfocusAll();
-                    //game.setScreen(game.firstScreen);
                 }
             }
 
@@ -149,8 +143,32 @@ public class MapScreen extends Stage implements Screen, GestureListener{
                 return true;
             }
         });
-        stage.addActor(switchFlButton
-        );
+        stage.addActor(switchFlButton[0]);
+
+        switchFlButton[1] = new TextButton("1", skin, "default");
+        switchFlButton[1].setSize(100, 50);
+        switchFlButton[1].setPosition(game.getWidthScreen() - 200, game.getHeightScreen() - 502);
+        switchFlButton[1].addListener(new InputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if (switchFlButtonPressed) {
+                    if (!currImage.equals("GZ_1.png")) {
+                        dispose();
+                        currImage = "GZ_1.png";
+                        initPicture(currImage);
+                    }
+                    switchFlButtonPressed = false;
+                }
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                switchFlButtonPressed = true;
+                return true;
+            }
+        });
+        stage.addActor(switchFlButton[1]);
+
 
         //Text Button "SEARCH"
         TextButton searchButton = new TextButton("GO >", skin, "default");
@@ -179,19 +197,9 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
     }
 
+
     public void show() {
-        stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
-        stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
-        heightMapPict = heightMapPict / 2;
-        statePositionW = positionMapW = 0;
-        statePositionH = positionMapH = heightMapPict/3;
-
-
-        map = new Texture(currImage);
-        batch = new SpriteBatch();
-        sprite = new Sprite(map);
-        sprite.setSize(widthMapPict, heightMapPict);
-        sprite.setPosition(positionMapW, positionMapH);
+        initPicture(currImage);
         inputMultiplexer = new InputMultiplexer();
         //Gdx.input.setInputProcessor(stage);///////////////!!!!!!!!!!!!!!!!!!!!!!!!
         inputMultiplexer.addProcessor(stage);
