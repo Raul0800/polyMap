@@ -14,9 +14,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -111,11 +113,13 @@ public class PointSearchScreen extends Stage implements Screen,GestureListener {
                     dispose();
                     game.existError = false;
                     game.setScreen(game.mapScreen);
+                    deleteWaiter();
                 }
             }
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                getWaiter();
                 backButtonPressed = true;
                 return true;
             }
@@ -123,6 +127,41 @@ public class PointSearchScreen extends Stage implements Screen,GestureListener {
         stage.addActor(backButton);
 
         pointShape = new ShapeRenderer();
+    }
+
+    public void getWaiter(){
+        //Change colour for waiter
+        Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.GREEN);
+        pixmap.fill();
+        BitmapFont myFont = new BitmapFont();
+        myFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        myFont.getData().setScale(2,2);
+        skin.add("green", new Texture(pixmap));
+        skin.add("default", myFont);//new BitmapFont());
+
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.up = skin.newDrawable("black", new Color((float)0, (float)0, (float)0, 0.5f));
+        textButtonStyle.font = skin.getFont("default");
+        skin.add("default", textButtonStyle);
+
+        int waiter_height = 100;
+
+        TextButton waiter = new TextButton("Wait, please...",
+                skin, "default");
+        waiter.setSize(game.getWidthScreen(), waiter_height);
+        waiter.setPosition(0, game.getHeightScreen() / 2);
+        waiter.setName("waiter");
+        stage.addActor(waiter);
+    }
+
+    public void deleteWaiter(){
+        for(Actor actor : stage.getActors()) {
+            if (actor.getName() == "waiter")
+                actor.addAction(Actions.removeActor());
+        }
     }
 
     public void show() {
