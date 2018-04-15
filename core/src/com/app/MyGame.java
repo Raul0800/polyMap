@@ -3,7 +3,6 @@ package com.app;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 
 public class MyGame extends Game {
 
@@ -17,12 +16,14 @@ public class MyGame extends Game {
     private int widthScreen, heightScreen;
 
     private UndirGraph graph;
+    boolean existError;
 
     @Override
     public void create() {
 
         widthScreen = Gdx.app.getGraphics().getWidth();
         heightScreen = Gdx.app.getGraphics().getHeight();
+        existError = false;
 
         this.secondScreen = new SecondScreen(this);
         this.inputABScreen = new InputABScreen(this);

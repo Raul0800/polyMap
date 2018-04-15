@@ -30,6 +30,7 @@ public class MainScreen extends Stage implements Screen {
         this.game = game;
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
+        game.existError = false;
 
         //Map button
         stage.addActor(createScreenChangingButton("map\\up\\Map_200up.png",
@@ -83,6 +84,7 @@ public class MainScreen extends Stage implements Screen {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (isPressed) {
                     dispose();
+                    game.existError = false;
                     game.setScreen(screen);
                 }
             }
