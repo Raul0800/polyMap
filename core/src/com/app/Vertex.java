@@ -1,19 +1,22 @@
 package com.app;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author aneesh
  */
-class Vertex implements Iterable<Integer>{
+class Vertex {
 
     /**
-     * Coordinate of vertex
+     * Coordinate of vertex.
      */
     private int x,y;
 
+    /**
+     *  Number of vertex.
+     */
     private int number;
 
     /**
@@ -24,38 +27,39 @@ class Vertex implements Iterable<Integer>{
     /**
      * List of vertices adjacent to this vertex.
      */
-    private ArrayList<Integer> neighbours;
+    private Map<Integer, Integer> neighbours;
 
     /**
      * identifier of room
      */
-    String typeOfRoom;
+    private String typeOfRoom;
 
     /**
      * No parameter constructor.
      */
-    public Vertex(){
+    Vertex(){
         this.visited = false;
-        this.neighbours = new ArrayList<Integer>();
+        this.neighbours = new HashMap<>();
     }
 
-    public void setNumber(int number) { this.number = number; }
-    public void setTypeOfRoom (String typeOfRoom) { this.typeOfRoom = typeOfRoom; }
-    /**
-     * Copy a vertex.(Deep copy)
-     * @param rhs The vertex to copy from.
-     */
-    public Vertex(Vertex rhs){
-        this.visited = rhs.visited;
-        this.neighbours = new ArrayList<Integer>(rhs.neighbours);
-    }
+    void setNumber(int number) { this.number = number; }
+    void setTypeOfRoom(String typeOfRoom) { this.typeOfRoom = typeOfRoom; }
 
     /**
      * Check to see if the vertex is marked as visited.
      * @return true/false
      */
-    public boolean isVisited(){
+    boolean isVisited(){
         return visited;
+    }
+
+    /**
+     * Return distance from this vertex to neighbour
+     * @param v - number of neighbour
+     * @return - distance to v
+     */
+    int getDistance(int v) {
+        return neighbours.get(v);
     }
 
     /**
@@ -63,7 +67,7 @@ class Vertex implements Iterable<Integer>{
      * @param x - coordinate x
      * @param y - coordinate y
      */
-    public void setCoordinate(int x, int y) {
+    void setCoordinate(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -77,60 +81,31 @@ class Vertex implements Iterable<Integer>{
     public String getTypeOfRoom() { return this.typeOfRoom; }
 
     /**
-     * Remove a vertex from the list of neighbor.
-     * @param v The vertex to remove.
-     */
-    public void removeNeighbour(int v){
-        this.neighbours.remove(v);
-    }
-
-    /**
-     *
-     * @return The number of neighbors to this vertex.
-     */
-    public int noOfNeighbours(){
-        return this.neighbours.size();
-    }
-
-    /**
      * Checks if 'v' is a neighbor of this vertex.
      * @param v The vertex in question.
      * @return true/false
      */
-    public boolean isNeighbour(int v){
-        return this.neighbours.contains(v);
+    boolean isNeighbour(int v){
+        return this.neighbours.containsKey(v);
     }
 
     /**
      * Adds a new neighbor.
      * @param v The vertex to be added.
      */
-    public void addNeighbour(int v){
-        this.neighbours.add(v);
+    void addNeighbour(int v, int dist){
+        this.neighbours.put(v, dist);
     }
 
-    /**
-     * Become neighbors with all the neighbors of 'other'
-     * @param other The vertex in question.
-     */
-    public void append(Vertex other){
-        for(int i : other){
-            this.neighbours.add(i);
-        }
-    }
 
     /**
      * Mark the vertex as visited.
-     * @param b
+     * @param b - value
      */
-    public void setVisited(boolean b){
+    void setVisited(boolean b){
         this.visited = b;
     }
 
-    @Override
-    public Iterator<Integer> iterator(){
-        return this.neighbours.iterator();
-    }
 
     public void printInfo() {
         System.out.println("Vertex " + number + ": (" + x + "; " + y + "). Neighbours : " + neighbours);

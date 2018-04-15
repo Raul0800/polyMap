@@ -19,37 +19,31 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import java.util.ArrayList;
-
-import javax.xml.soap.Text;
-
-/**
- * Created by UltraBook Samsung on 27.03.2018.
- */
 
 public class PointSearchScreen extends Stage implements Screen,GestureListener {
     private SpriteBatch batch;
     private Sprite sprite;
+
     private  int widthMapPict;//ширина картинки карты
     private int heightMapPict;//высота картинки карты
     private  float positionMapW, positionMapH;//позиция по У картинки карты
     private  int stateWidthScreen,stateHeightScreen;//позиция по Х картинки карты
     //все переменные,описанные выше, изменяются при масштабировании
     private  float statePositionW,statePositionH,stateWMap,stateHMap;// неизменная позиция и размеры картинки
-    InputMultiplexer inputMultiplexer;
-    public String currImage = new String("GZ_1.png");//название картинки
+
+    private InputMultiplexer inputMultiplexer;
+    private String currImage = "GZ_1.png";//название картинки
 
     private Stage stage;
-    public MyGame game;
-    public Texture map;
+    private MyGame game;
+    private Texture map;
 
     private boolean backButtonPressed;
 
     private int point;
-    ShapeRenderer pointShape;
+    private ShapeRenderer pointShape;
 
     PointSearchScreen(final MyGame game) {
 
@@ -161,9 +155,9 @@ public class PointSearchScreen extends Stage implements Screen,GestureListener {
         stage.draw();
     }
 
-    public void setPoint (int point) { this.point = point; }
+    void setPoint(int point) { this.point = point; }
 
-    public void drawPoint() {
+    private void drawPoint() {
         float scaleX = widthMapPict/stateWMap;
         float scaleY = heightMapPict/stateHMap;
 

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 public class PathScreen extends Stage implements Screen,GestureListener {
     private SpriteBatch batch;
     private Sprite sprite;
+
     private  int widthMapPict;//ширина картинки карты
     private int heightMapPict;//высота картинки карты
     private  float positionMapW, positionMapH;//позиция по У картинки карты
@@ -35,9 +36,10 @@ public class PathScreen extends Stage implements Screen,GestureListener {
     //все переменные,описанные выше, изменяются при масштабировании
     private  float statePositionW,statePositionH,stateWMap,stateHMap;// неизменная позиция и размеры картинки
     InputMultiplexer inputMultiplexer;
-    public String currImage = new String("GZ_1.png");//название картинки
+
+    private String currImage = "GZ_1.png";//название картинки
     private Stage stage;
-    public MyGame game;
+    private MyGame game;
     private boolean isPressed;
     private Texture map ;//= new Texture("1_plan_main.png");
     private ShapeRenderer line;
@@ -160,10 +162,10 @@ public class PathScreen extends Stage implements Screen,GestureListener {
     }
 
 
-    public void setFirstPoint (int point) { firstPoint = point; }
-    public void setSecondPoint (int point) { secondPoint = point; }
+    void setFirstPoint(int point) { firstPoint = point; }
+    void setSecondPoint(int point) { secondPoint = point; }
 
-    void drawPath () {
+    private void drawPath() {
         line.begin(ShapeRenderer.ShapeType.Filled);
         line.setColor(Color.RED);
         ArrayList<Vertex> path = game.getGraph().searchPath(firstPoint, secondPoint);

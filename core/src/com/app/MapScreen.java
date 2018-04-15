@@ -22,36 +22,26 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import javax.xml.soap.Text;
-
-import static java.lang.Math.abs;
-
-
 public class MapScreen extends Stage implements Screen, GestureListener{
     private SpriteBatch batch;
     private Sprite sprite;
     private  int widthMapPict;
     private int heightMapPict;
     private  float positionMapW, positionMapH;
-    private  int stateWidthScreen;
-    private int stateHeightScreen;
-    private  float statePositionW,statePositionH;
-    InputMultiplexer inputMultiplexer;
+    private  int stateWidthScreen, stateHeightScreen;
 
     private Stage stage;
-    public MyGame game;
+    private MyGame game;
     private TextField textFieldSearch;
-    public String currImage = new String("GZ_1.png");
-    public Texture map;
+    private String currImage = "GZ_1.png";
+    private Texture map;
     private boolean backButtonPressed, searchButtonPressed, switchFlButtonPressed;
-    Dialog dialog;
+    private Dialog dialog;
 
-    void initPicture(String currImage){
+    private void initPicture(String currImage){
         stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
         stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
         heightMapPict = heightMapPict / 2;
-        statePositionW = positionMapW = 0;
-        statePositionH = positionMapH = heightMapPict/3;
 
         map = new Texture(currImage);
         batch = new SpriteBatch();
@@ -221,12 +211,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
                         }
                         game.pointSearchScreen.setPoint(point);
                     }
-                    catch (NumberFormatException ex) {
-                        game.existError = true;
-                        game.setScreen(game.mapScreen);
-                        return;
-                    }
-                    catch (UndirGraph.NoSuchVertexException ex) {
+                    catch (NumberFormatException | UndirGraph.NoSuchVertexException ex) {
                         game.existError = true;
                         game.setScreen(game.mapScreen);
                         return;
@@ -251,7 +236,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
     public void show() {
         initPicture(currImage);
-        inputMultiplexer = new InputMultiplexer();
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
         //Gdx.input.setInputProcessor(stage);///////////////!!!!!!!!!!!!!!!!!!!!!!!!
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(new GestureDetector(this));

@@ -7,15 +7,6 @@ import java.util.*;
 import static java.lang.Math.min;
 
 public class UndirGraph implements Graph{
-    /**
-     * Number of vertices in the graph.
-     */
-    private int n;
-
-    /**
-     * Number of edges in the graph.
-     */
-    private int e;
 
     /**
      * The graph is a mapping from the 'vertex number ' to a instance
@@ -26,35 +17,12 @@ public class UndirGraph implements Graph{
     private Map<Integer, Vertex> graphMap;
 
     /**
-     * Construct a new undirected graph with 'n' vertices.
-     * @param n The number of vertices.
-     */
-    public UndirGraph(int n){
-        this.n = n;
-        this.graphMap = new HashMap<Integer, Vertex>();
-    }
-
-    /**
-     * Construct a graph as a copy of another graph.
-     * @param rhs The graph to copy.
-     */
-    public UndirGraph(UndirGraph rhs){
-        this.n = rhs.n;
-        this.e = rhs.e;
-        this.graphMap = new HashMap<Integer, Vertex>();
-        for(Map.Entry<Integer, Vertex> entry: rhs.graphMap.entrySet()){
-            this.graphMap.put(entry.getKey(), new Vertex(entry.getValue()));
-        }
-    }
-
-    /**
      * Construct a graph from a Scanner.
      * @param string The scanner.
      */
-    //public UndirGraph(java.util.Scanner sc){
-    public UndirGraph(String string){
+    UndirGraph(String string){
         String typeOfRoom = null;
-        this.graphMap = new HashMap<Integer, Vertex>();
+        this.graphMap = new HashMap<>();
         StringTokenizer strToken = new StringTokenizer(string,"\n");
 
         int tokens = strToken.countTokens();
@@ -76,11 +44,10 @@ public class UndirGraph implements Graph{
             graphMap.get(arr[0]).setCoordinate(arr[1] * 768 / 6531, arr[2] * 592 / 4082);
             graphMap.get(arr[0]).setNumber(arr[0]);
             graphMap.get(arr[0]).setTypeOfRoom(typeOfRoom);
-            for(int i = 3; i < count - 1; ++i) {
-                graphMap.get(arr[0]).addNeighbour(arr[i]);
+            for(int i = 3; i < count - 2; i += 2) {
+                graphMap.get(arr[0]).addNeighbour(arr[i], arr[i + 1]);
             }
         }
-        e = edges();
     }
 
     /**
@@ -88,7 +55,7 @@ public class UndirGraph implements Graph{
      * @param v - number of the vertex
      * @return - vertex
      */
-    public Vertex getVertex(int v) {
+    Vertex getVertex(int v) {
         return this.graphMap.get(v);
     }
 
@@ -98,78 +65,11 @@ public class UndirGraph implements Graph{
      * improper use of 'vertex numbers '.
      */
     static class NoSuchVertexException extends RuntimeException{
-        public NoSuchVertexException(String no_such_vertex) {
+        NoSuchVertexException(String no_such_vertex) {
             super(no_such_vertex);
         }
     }
 
-    /**
-     * Custom exception type which flags exception due to
-     * bad edge specifications.
-     */
-    class BadEdgeException extends RuntimeException{
-        public BadEdgeException(String bad_edge){
-            super(bad_edge);
-        }
-    }
-
-    /**
-     * Add a edge between Vertex v1 and Vertex v2.
-     * @param v1
-     * @param v2
-     */
-    @Override
-    public void addEdge(int v1, int v2){
-        if(!hasVertex(v1) || !hasVertex(v2))
-            throw new NoSuchVertexException("No such vertex!");
-        graphMap.get(v1).addNeighbour(v2);
-        graphMap.get(v2).addNeighbour(v1);
-    }
-
-    /**
-     * Remove a edge between Vertex v1 and Vertex v2.
-     * @param v1
-     * @param v2
-     */
-    @Override
-    public void removeEdge(int v1, int v2){
-        if(!edgeExists(v1, v2))
-            throw new BadEdgeException("Such an edge does not exist!");
-        else{
-            graphMap.get(v1).removeNeighbour(v2);
-            graphMap.get(v2).removeNeighbour(v1);
-        }
-    }
-
-    /**
-     * Count the total number of edges.
-     * @return Integer specifying the total number of edges in the graph.
-     */
-    private int edges(){
-        int total = 0;
-        for(Vertex v : graphMap.values()){
-            total += v.noOfNeighbours();
-        }
-        return total / 2;
-    }
-
-    /**
-     * The number of edges in the graph.
-     * @return 'e' which denotes |E| of the graph.
-     */
-    @Override
-    public int numberOfEdges(){
-        return e;
-    }
-
-    /**
-     * The number of vertices in the graph.
-     * @return 'v' which denotes |V| of the graph.
-     */
-    @Override
-    public int size(){
-        return n;
-    }
 
     /**
      * Determines if a edge exists between Vertex v1 and Vertex v2.
@@ -186,26 +86,12 @@ public class UndirGraph implements Graph{
 
     /**
      * Determines if 'v' is a valid vertex number.
-     * @param v
+     * @param v - vertex
      * @return true/false.
      */
     @Override
     public boolean hasVertex(int v){
         return graphMap.containsKey(v);
-    }
-
-    /**
-     * Print the graph.
-     */
-    @Override
-    public void print(){
-        System.out.println("The Graph:- ");
-        for(Map.Entry<Integer, Vertex> entry : graphMap.entrySet()){
-            System.out.print(entry.getKey() + " -> ");
-            for(Integer i : entry.getValue())
-                System.out.print(i + " ");
-            System.out.println("\n");
-        }
     }
 
     private final static int INF = Integer.MAX_VALUE / 2;
@@ -218,12 +104,9 @@ public class UndirGraph implements Graph{
      */
     public ArrayList<Vertex> searchPath(int a, int b) {
 
-        if(getVertex(a) == null || getVertex(b) == null)
-            throw new NoSuchVertexException("no vertex\n");
-
-        Map<Integer, Integer> prev = new HashMap<Integer, Integer>();
-        Map<Integer, Integer> dist = new HashMap<Integer, Integer>();
-        ArrayList<Vertex> path = new ArrayList<Vertex>();
+        Map<Integer, Integer> prev = new HashMap<>();
+        Map<Integer, Integer> dist = new HashMap<>();
+        ArrayList<Vertex> path = new ArrayList<>();
 
         Set<Integer> keys = graphMap.keySet();
         for(Integer key : keys) {
@@ -246,8 +129,8 @@ public class UndirGraph implements Graph{
 
             for(Integer key : keys) {
                 if(!graphMap.get(key).isVisited() && edgeExists(key, v)) {
-                    dist.put(key, min(dist.get(key), dist.get(v) + 1));
-                    if(dist.get(v) + 1 <= dist.get(key)) {
+                    dist.put(key, min(dist.get(key), dist.get(v) + graphMap.get(v).getDistance(key)));
+                    if(dist.get(v) + graphMap.get(v).getDistance(key) <= dist.get(key)) {
                         prev.put(key, v);
                     }
                 }
@@ -256,7 +139,7 @@ public class UndirGraph implements Graph{
 
         Integer buf = prev.get(b);
 
-        ArrayList<Integer> bufList = new ArrayList<Integer>();
+        ArrayList<Integer> bufList = new ArrayList<>();
         while(buf != null) {
             bufList.add(buf);
             buf = prev.get(buf);
