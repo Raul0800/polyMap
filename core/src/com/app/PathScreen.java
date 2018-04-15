@@ -213,20 +213,20 @@ public class PathScreen extends Stage implements Screen,GestureListener {
         float scaleY = heightMapPict/stateHMap;
 
         for(int i = 0; i < path.size() - 1; i++) {
-            line.rectLine((path.get(i).getX()*scaleX+positionMapW),
+            line.rectLine((path.get(i).getX()*scaleX + positionMapW),
                     (path.get(i).getY()*scaleY + positionMapH),
-                    (path.get(i + 1).getX()*scaleX+positionMapW),
-                    (path.get(i + 1).getY()*scaleY +positionMapH),
+                    (path.get(i + 1).getX()*scaleX + positionMapW),
+                    (path.get(i + 1).getY()*scaleY + positionMapH),
                     5);
         }
-        line.rectLine((path.get(0).getX()*scaleX+positionMapW),
+        line.rectLine((path.get(0).getX()*scaleX + positionMapW),
                 (path.get(0).getY()*scaleY + positionMapH),
-                (path.get(0).getX()*scaleX+positionMapW + 8),
-                (path.get(0).getY()*scaleY +positionMapH + 8),
+                (path.get(0).getX()*scaleX + positionMapW + 8),
+                (path.get(0).getY()*scaleY + positionMapH + 8),
                 10);
-        line.rectLine((path.get(path.size() - 1).getX()*scaleX+positionMapW),
+        line.rectLine((path.get(path.size() - 1).getX()*scaleX + positionMapW),
                 (path.get(path.size() - 1).getY()*scaleY + positionMapH),
-                ( path.get(path.size() - 1).getX()*scaleX+positionMapW + 8),
+                ( path.get(path.size() - 1).getX()*scaleX + positionMapW + 8),
                 (path.get(path.size() - 1).getY()*scaleY + positionMapH + 8),
                 10);
         line.end();
