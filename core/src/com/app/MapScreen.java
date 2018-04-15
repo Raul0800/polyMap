@@ -27,10 +27,12 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 public class MapScreen extends Stage implements Screen, GestureListener{
     private SpriteBatch batch;
     private Sprite sprite;
-    private  int widthMapPict;
-    private int heightMapPict;
-    private  float positionMapW, positionMapH;
-    private  int stateWidthScreen, stateHeightScreen;
+    private  int widthMapPict;//ширина картинки карты
+    private int heightMapPict;//высота картинки карты
+    private  float positionMapW, positionMapH;//позиция по У картинки карты
+    private  int stateWidthScreen,stateHeightScreen;//позиция по Х картинки карты
+    //все переменные,описанные выше, изменяются при масштабировании
+    private  float statePositionW,statePositionH,stateWMap,stateHMap;// неизменная позиция и размеры картинки
 
     private Stage stage;
     private MyGame game;
@@ -40,18 +42,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
     private boolean backButtonPressed, searchButtonPressed, switchFlButtonPressed;
     private Dialog dialog;
 
-    private void initPicture(String currImage){
-        stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
-        stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
-        heightMapPict = heightMapPict / 2;
 
-        map = new Texture(currImage);
-        batch = new SpriteBatch();
-        sprite = new Sprite(map);
-        sprite.setSize(widthMapPict, heightMapPict);
-        sprite.setPosition(positionMapW, positionMapH);
-
-    }
     MapScreen(final MyGame game) {
 //////////////////////////
         this.game = game;
@@ -153,7 +144,17 @@ public class MapScreen extends Stage implements Screen, GestureListener{
                     if (!currImage.equals("GZ_0.png")) {
                         dispose();
                         currImage = "GZ_0.png";
-                        initPicture(currImage);
+                        stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
+                        stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
+                        heightMapPict = heightMapPict / 2;
+                        statePositionW = positionMapW = 0;
+                        statePositionH = positionMapH = heightMapPict/3;
+
+                        map = new Texture(currImage);
+                        batch = new SpriteBatch();
+                        sprite = new Sprite(map);
+                        sprite.setSize(widthMapPict, heightMapPict);
+                        sprite.setPosition(positionMapW, positionMapH);
                     }
                     switchFlButtonPressed = false;
                     deleteWaiter();
@@ -179,7 +180,17 @@ public class MapScreen extends Stage implements Screen, GestureListener{
                     if (!currImage.equals("GZ_1.png")) {
                         dispose();
                         currImage = "GZ_1.png";
-                        initPicture(currImage);
+                        stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
+                        stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
+                        heightMapPict = heightMapPict / 2;
+                        statePositionW = positionMapW = 0;
+                        statePositionH = positionMapH = heightMapPict/3;
+
+                        map = new Texture(currImage);
+                        batch = new SpriteBatch();
+                        sprite = new Sprite(map);
+                        sprite.setSize(widthMapPict, heightMapPict);
+                        sprite.setPosition(positionMapW, positionMapH);
                     }
                     switchFlButtonPressed = false;
                     deleteWaiter();
@@ -278,7 +289,18 @@ public class MapScreen extends Stage implements Screen, GestureListener{
     }
 
     public void show() {
-        initPicture(currImage);
+        stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
+        stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
+        heightMapPict = heightMapPict / 2;
+        statePositionW = positionMapW = 0;
+        statePositionH = positionMapH = heightMapPict/3;
+
+        map = new Texture(currImage);
+        batch = new SpriteBatch();
+        sprite = new Sprite(map);
+        sprite.setSize(widthMapPict, heightMapPict);
+        sprite.setPosition(positionMapW, positionMapH);
+
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         //Gdx.input.setInputProcessor(stage);///////////////!!!!!!!!!!!!!!!!!!!!!!!!
         inputMultiplexer.addProcessor(stage);
