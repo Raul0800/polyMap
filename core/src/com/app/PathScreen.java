@@ -53,12 +53,6 @@ public class PathScreen extends Stage implements Screen,GestureListener {
     private int firstPoint, secondPoint;
 
     PathScreen(final MyGame game) {
-        stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
-        stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
-        heightMapPict = heightMapPict / 2;
-        statePositionW = positionMapW = 0;
-        statePositionH = positionMapH = heightMapPict/3;
-
         this.game = game;
         stage = new Stage(new ScreenViewport());
         Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
@@ -131,6 +125,13 @@ public class PathScreen extends Stage implements Screen,GestureListener {
     @Override
     public void show() {
         //инициализация всех полей происходит в этом методе. При загрузке окна этот метод первый, который вызывается
+        //получаем размеры и позицию карты, каждый раз получаем заново, при переходе на это окно
+        stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
+        stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
+        heightMapPict = heightMapPict / 2;
+        statePositionW = positionMapW = 0;
+        statePositionH = positionMapH = heightMapPict/3;
+
         line = new ShapeRenderer();
         map = new Texture(currImage);
         batch = new SpriteBatch();
