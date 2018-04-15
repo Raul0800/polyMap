@@ -66,7 +66,8 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         this.game = game;
         stage = new Stage(new ScreenViewport());
         Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
-        //Change colour
+
+        //Settings colours for toolbox
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.GREEN);
         pixmap.fill();
@@ -77,21 +78,42 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         skin.add("default", myFont);//new BitmapFont());
 
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.up = skin.newDrawable("green", new Color((float)0.42, (float)0.68, (float)0.27, 1));
+        textButtonStyle.font = skin.getFont("default");
+        skin.add("default", textButtonStyle);
+
+        //Toolbar up ans down
+        int toolBar_height = 100;
+
+        TextButton toolbarUp = new TextButton("", skin, "default");
+        toolbarUp.setSize(game.getWidthScreen(), toolBar_height);
+        toolbarUp.setPosition(0, game.getHeightScreen() - 100);
+        stage.addActor(toolbarUp);
+
+        TextButton toolbarDown = new TextButton("", skin, "default");
+        toolbarDown.setSize(game.getWidthScreen(), 50);
+        toolbarDown.setPosition(0, 0);
+        stage.addActor(toolbarDown);
+
+        //Settings colours for buttons
+        pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.GREEN);
+        pixmap.fill();
+        myFont = new BitmapFont();
+        myFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        myFont.getData().setScale(2,2);
+        skin.add("green", new Texture(pixmap));
+        skin.add("default", myFont);//new BitmapFont());
+
+        textButtonStyle = new TextButton.TextButtonStyle();
         textButtonStyle.up = skin.newDrawable("green", new Color((float)0.42, (float)0.71, (float)0.27, 1));
         textButtonStyle.font = skin.getFont("default");
         skin.add("default", textButtonStyle);
 
-
-        //Text Field for point
-        textFieldSearch = new TextField("", skin);
-        textFieldSearch.setPosition(50, game.getHeightScreen() - 300);
-        textFieldSearch.setSize(game.getWidthScreen() - 300, 100);
-        stage.addActor(textFieldSearch);
-
         //Text Button "BACK"
         TextButton backButton = new TextButton("< BACK", skin, "default");
         backButton.setSize(250, 100);
-        backButton.setPosition(50, game.getHeightScreen() - 150);
+        backButton.setPosition(0, game.getHeightScreen()-100);
         backButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -115,7 +137,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         //Обозначение для ниже стоящих кнопок.
         TextButton nameOfSwitchFlButton = new TextButton("Floors", skin, "default");
         nameOfSwitchFlButton.setSize(100, 50);
-        nameOfSwitchFlButton.setPosition(game.getWidthScreen() - 200, game.getHeightScreen() - 400);
+        nameOfSwitchFlButton.setPosition(game.getWidthScreen() - 150, game.getHeightScreen() - 260);
         stage.addActor(nameOfSwitchFlButton);
 
         //Массив кнопок отвечающих за выбор этажа. Создано в виде массива с возможностью дальнейшнего
@@ -123,7 +145,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         TextButton []switchFlButton = new TextButton[2];
         switchFlButton[0] = new TextButton("0", skin, "default");
         switchFlButton[0].setSize(100, 50);
-        switchFlButton[0].setPosition(game.getWidthScreen() - 200, game.getHeightScreen() - 451);
+        switchFlButton[0].setPosition(game.getWidthScreen() - 150, game.getHeightScreen() - 311);
         switchFlButton[0].addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -147,7 +169,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
         switchFlButton[1] = new TextButton("1", skin, "default");
         switchFlButton[1].setSize(100, 50);
-        switchFlButton[1].setPosition(game.getWidthScreen() - 200, game.getHeightScreen() - 502);
+        switchFlButton[1].setPosition(game.getWidthScreen() - 150, game.getHeightScreen() - 362);
         switchFlButton[1].addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -169,11 +191,16 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         });
         stage.addActor(switchFlButton[1]);
 
+        //Text Field for point
+        textFieldSearch = new TextField("", skin);
+        textFieldSearch.setSize(game.getWidthScreen() - 200, 100);
+        textFieldSearch.setPosition(0, game.getHeightScreen() - 200);
+        stage.addActor(textFieldSearch);
 
         //Text Button "SEARCH"
         TextButton searchButton = new TextButton("GO >", skin, "default");
         searchButton.setSize(200, 100);
-        searchButton.setPosition(game.getWidthScreen() - 220, game.getHeightScreen() - 300);
+        searchButton.setPosition(game.getWidthScreen() - 200, game.getHeightScreen() - 200);
         searchButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -264,10 +291,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        System.out.println("PAAAAAAAAAAAAAAAAAAAAAAAAAAAN:");
         positionMapH = positionMapH - deltaY;
-        System.out.println("abs(widthMapPict - stateWidthScreen): " + abs(widthMapPict - stateWidthScreen) + "\n");
-        System.out.println("abs(positionMapW + deltaX): " + abs(positionMapW + deltaX));
         positionMapW = positionMapW + deltaX;
         sprite.setPosition(positionMapW, positionMapH);
         return true;

@@ -41,31 +41,60 @@ public class InputABScreen extends Stage implements Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        Skin mySkin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
-        //Change colour
+        Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+
+        //Settings colours for toolbox
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.GREEN);
         pixmap.fill();
-
         BitmapFont buttonFont = new BitmapFont();
         buttonFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         buttonFont.getData().setScale(2,2);
-        mySkin.add("green", new Texture(pixmap));
-        mySkin.add("default", buttonFont);//new BitmapFont());
+        skin.add("green", new Texture(pixmap));
+        skin.add("default", buttonFont);//new BitmapFont());
+
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.up = skin.newDrawable("green", new Color((float)0.42, (float)0.68, (float)0.27, 1));
+        textButtonStyle.font = skin.getFont("default");
+        skin.add("default", textButtonStyle);
+
+        //Toolbar up ans down
+        int toolBar_height = 100;
+
+        TextButton toolbarUp = new TextButton("", skin, "default");
+        toolbarUp.setSize(game.getWidthScreen(), toolBar_height);
+        toolbarUp.setPosition(0, game.getHeightScreen() - 100);
+        stage.addActor(toolbarUp);
+
+        TextButton toolbarDown = new TextButton("", skin, "default");
+        toolbarDown.setSize(game.getWidthScreen(), 50);
+        toolbarDown.setPosition(0, 0);
+        stage.addActor(toolbarDown);
+
+        //Settings colour for buttons
+        pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.GREEN);
+        pixmap.fill();
+
+        buttonFont = new BitmapFont();
+        buttonFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        buttonFont.getData().setScale(2,2);
+        skin.add("green", new Texture(pixmap));
+        skin.add("default", buttonFont);//new BitmapFont());
 
         pointFont = new BitmapFont();
         pointFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         pointFont.getData().setScale(7,7);
 
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = mySkin.newDrawable("green", new Color((float)0.42, (float)0.71, (float)0.27, 1));
-        textButtonStyle.font = mySkin.getFont("default");
-        mySkin.add("default", textButtonStyle);
+        textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.up = skin.newDrawable("green", new Color((float)0.42, (float)0.71, (float)0.27, 1));
+        textButtonStyle.font = skin.getFont("default");
+        skin.add("default", textButtonStyle);
 
 
         //Text Fields for two points
-        tfFirstPoint = new TextField("", mySkin);
-        tfSecondPoint = new TextField("", mySkin);
+        tfFirstPoint = new TextField("", skin);
+        tfSecondPoint = new TextField("", skin);
         tfFirstPoint.setPosition(150, game.getHeightScreen() - 300);
         tfSecondPoint.setPosition(150, game.getHeightScreen() - 450);
         tfFirstPoint.setSize(game.getWidthScreen() - 200, 100);
@@ -75,7 +104,7 @@ public class InputABScreen extends Stage implements Screen {
         stage.addActor(tfSecondPoint);
 
         // Text Button "SEARCH"
-        Button searchButton = new TextButton("SEARCH >", mySkin, "default");
+        Button searchButton = new TextButton("SEARCH >", skin, "default");
         searchButton.setSize(game.getWidthScreen(), 150);
         searchButton.setPosition(0, game.getHeightScreen() - 700);
         searchButton.addListener(new InputListener() {
@@ -104,10 +133,10 @@ public class InputABScreen extends Stage implements Screen {
         stage.addActor(searchButton);
 
         //Text Button "BACK"
-        Button button = new TextButton("< BACK", mySkin, "default");
-        button.setSize(250, 100);
-        button.setPosition(50, game.getHeightScreen() - 150);
-        button.addListener(new InputListener() {
+        Button backButton = new TextButton("< BACK", skin, "default");
+        backButton.setSize(250, 100);
+        backButton.setPosition(0, game.getHeightScreen()-100);
+        backButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (backButtonPressed) {
@@ -116,7 +145,6 @@ public class InputABScreen extends Stage implements Screen {
                     tfFirstPoint.setText("");
                     tfSecondPoint.setText("");
                     game.setScreen(game.mainScreen);
-
                 }
             }
 
@@ -125,9 +153,8 @@ public class InputABScreen extends Stage implements Screen {
                 backButtonPressed = true;
                 return true;
             }
-
         });
-        stage.addActor(button);
+        stage.addActor(backButton);
 
     }
 

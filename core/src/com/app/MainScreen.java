@@ -2,14 +2,19 @@ package com.app;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -26,6 +31,7 @@ public class MainScreen extends Stage implements Screen {
     MainScreen(final MyGame game) {
         int col_width = game.getWidthScreen()/3;
         int row_height = col_width;
+        int toolBar_height = 100;
 
         this.game = game;
         stage = new Stage(new ScreenViewport());
@@ -35,34 +41,64 @@ public class MainScreen extends Stage implements Screen {
         stage.addActor(createScreenChangingButton("map\\up\\Map_200up.png",
                 "map\\down\\Map_200down.png",
                 col_width, row_height,
-                0, this.game.getHeightScreen() - row_height, this.game.mapScreen));
+                0, this.game.getHeightScreen() - row_height - toolBar_height, this.game.mapScreen));
         //A-B map button
         stage.addActor(createScreenChangingButton("search_on_map\\up\\Search_Map_200up.png",
                 "search_on_map\\down\\Search_Map_200down.png",
                 col_width, row_height,
-                2*col_width, this.game.getHeightScreen() - row_height, this.game.inputABScreen));
+                2*col_width, this.game.getHeightScreen() - row_height - toolBar_height, this.game.inputABScreen));
         //Gallery button
         stage.addActor(createScreenChangingButton("gallery\\up\\Gallery_200up.png",
                 "gallery\\down\\Gallery_200down.png",
                 col_width, row_height,
-                0, this.game.getHeightScreen() - 2*row_height, this.game.secondScreen));
+                0, this.game.getHeightScreen() - 2*row_height - toolBar_height, this.game.secondScreen));
         //List of departments button
         stage.addActor(createScreenChangingButton(
                 "department_list\\up\\ListOfDepartments_200up.png",
                 "department_list\\down\\ListOfDepartments_200down.png",
                 col_width, row_height,
-                2*col_width, this.game.getHeightScreen() - 2*row_height, this.game.secondScreen));
+                2*col_width, this.game.getHeightScreen() - 2*row_height - toolBar_height, this.game.secondScreen));
         //Favorites button
         stage.addActor(createScreenChangingButton("favorites\\up\\Fav_200up.png",
                 "favorites\\down\\Fav_200down.png",
                 col_width, row_height,
-                0, this.game.getHeightScreen() - 3*row_height, this.game.secondScreen));
+                0, this.game.getHeightScreen() - 3*row_height - toolBar_height, this.game.secondScreen));
         //Settings button
         stage.addActor(createScreenChangingButton("settings\\up\\Settings_200up.png",
                 "settings\\down\\Settings_200down.png",
                 col_width, row_height,
-                2*col_width, this.game.getHeightScreen() - 3*row_height, this.game.secondScreen));
+                2*col_width, this.game.getHeightScreen() - 3*row_height - toolBar_height, this.game.secondScreen));
+        //Toolbar up ans down
+        //Change colour
+        Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
 
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.GREEN);
+        pixmap.fill();
+        BitmapFont myFont = new BitmapFont();
+        myFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        myFont.getData().setScale(2,2);
+        skin.add("green", new Texture(pixmap));
+        skin.add("default", myFont);//new BitmapFont());
+
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.up = skin.newDrawable("green", new Color((float)0.42, (float)0.68, (float)0.27, 1));
+        textButtonStyle.font = skin.getFont("default");
+        skin.add("default", textButtonStyle);
+
+        //int toolBar_height = 100;
+
+        TextButton toolbarUp = new TextButton("  SPBSTU",
+                skin, "default");
+        toolbarUp.setSize(game.getWidthScreen(), toolBar_height);
+        toolbarUp.setPosition(0, game.getHeightScreen() - 100);
+        stage.addActor(toolbarUp);
+
+        TextButton toolbarDown = new TextButton("                                                      " +
+                "PolyMap 2018", skin, "default");
+        toolbarDown.setSize(game.getWidthScreen(), 50);
+        toolbarDown.setPosition(0, 0);
+        stage.addActor(toolbarDown);
     }
 
     private Button createScreenChangingButton(String textureNameUp,
