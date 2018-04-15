@@ -126,34 +126,34 @@ public class MainScreen extends Stage implements Screen {
         game.existError = false;
 
         //Map button
-        stage.addActor(createScreenChangingButton("map\\up\\Map_200up.png",
-                "map\\down\\Map_200down.png",
+        stage.addActor(createScreenChangingButton("map\\up\\Map_200.png",
+                "map\\down\\Map_200.png",
                 col_width, row_height,
                 0, this.game.getHeightScreen() - row_height - toolBar_height, this.game.mapScreen));
         //A-B map button
-        stage.addActor(createScreenChangingButton("search_on_map\\up\\Search_Map_200up.png",
-                "search_on_map\\down\\Search_Map_200down.png",
+        stage.addActor(createScreenChangingButton("search_on_map\\up\\Search_Map_200.png",
+                "search_on_map\\down\\Search_Map_200.png",
                 col_width, row_height,
                 2 * col_width, this.game.getHeightScreen() - row_height - toolBar_height, this.game.inputABScreen));
         //Gallery button
-        stage.addActor(createScreenChangingButton("gallery\\up\\Gallery_200up.png",
-                "gallery\\down\\Gallery_200down.png",
+        stage.addActor(createScreenChangingButton("gallery\\up\\Gallery_200.png",
+                "gallery\\down\\Gallery_200.png",
                 col_width, row_height,
                 0, this.game.getHeightScreen() - 2 * row_height - toolBar_height, this.game.secondScreen));
         //List of departments button
         stage.addActor(createScreenChangingButton(
-                "department_list\\up\\ListOfDepartments_200up.png",
-                "department_list\\down\\ListOfDepartments_200down.png",
+                "department_list\\up\\ListOfDepartments_200.png",
+                "department_list\\down\\ListOfDepartments_200.png",
                 col_width, row_height,
                 2 * col_width, this.game.getHeightScreen() - 2 * row_height - toolBar_height, this.game.secondScreen));
         //Favorites button
-        stage.addActor(createScreenChangingButton("favorites\\up\\Fav_200up.png",
-                "favorites\\down\\Fav_200down.png",
+        stage.addActor(createScreenChangingButton("favorites\\up\\Fav_200.png",
+                "favorites\\down\\Fav_200.png",
                 col_width, row_height,
                 0, this.game.getHeightScreen() - 3 * row_height - toolBar_height, this.game.secondScreen));
         //Settings button
-        stage.addActor(createScreenChangingButton("settings\\up\\Settings_200up.png",
-                "settings\\down\\Settings_200down.png",
+        stage.addActor(createScreenChangingButton("settings\\up\\Settings_200.png",
+                "settings\\down\\Settings_200.png",
                 col_width, row_height,
                 2 * col_width, this.game.getHeightScreen() - 3 * row_height - toolBar_height, this.game.secondScreen));
         //Toolbar up ans down
