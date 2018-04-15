@@ -9,14 +9,11 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -27,12 +24,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.ArrayList;
-
-import static java.lang.Math.abs;
-
-/**
- * Created by UltraBook Samsung on 26.03.2018.
- */
 
 public class PathScreen extends Stage implements Screen,GestureListener {
     private SpriteBatch batch;
@@ -176,7 +167,6 @@ public class PathScreen extends Stage implements Screen,GestureListener {
         line.begin(ShapeRenderer.ShapeType.Filled);
         line.setColor(Color.RED);
         ArrayList<Vertex> path = game.getGraph().searchPath(firstPoint, secondPoint);
-//103 182
         //изменила первоночальный вид вывода линии. Теперь координаты линии зависят не от экрана, а от положения картинки
         float scaleX = widthMapPict/stateWMap;
         float scaleY = heightMapPict/stateHMap;
