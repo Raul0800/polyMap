@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class SecondScreen extends Stage implements Screen {
     private Stage stage;
-    public MyGame game;
+    private MyGame game;
     private boolean isPressed;
 
     SecondScreen(final MyGame game) {

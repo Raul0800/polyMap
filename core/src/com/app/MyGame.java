@@ -6,12 +6,12 @@ import com.badlogic.gdx.files.FileHandle;
 
 public class MyGame extends Game {
 
-    public MainScreen mainScreen;
-    public SecondScreen secondScreen;
-    public InputABScreen inputABScreen;
-    public PathScreen pathScreen;
-    public MapScreen mapScreen;
-    public PointSearchScreen pointSearchScreen;
+    MainScreen mainScreen;
+    SecondScreen secondScreen;
+    InputABScreen inputABScreen;
+    PathScreen pathScreen;
+    MapScreen mapScreen;
+    PointSearchScreen pointSearchScreen;
 
     private int widthScreen, heightScreen;
 
@@ -37,10 +37,10 @@ public class MyGame extends Game {
         graph = new UndirGraph(handle.readString());
     }
 
-    public int getWidthScreen() { return  widthScreen; }
-    public int getHeightScreen() { return heightScreen; }
+    int getWidthScreen() { return  widthScreen; }
+    int getHeightScreen() { return heightScreen; }
 
-    public UndirGraph getGraph() {return graph; }
+    UndirGraph getGraph() {return graph; }
 
     @Override
     public void render() {

@@ -23,10 +23,10 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 public class MainScreen extends Stage implements Screen {
 
     private Stage stage;
-    public MyGame game;
+    private MyGame game;
     private boolean isPressed;
 
-    Texture logo = new Texture("logo.png");
+    private Texture logo = new Texture("logo.png");
 
     MainScreen(final MyGame game) {
         int col_width = game.getWidthScreen()/3;

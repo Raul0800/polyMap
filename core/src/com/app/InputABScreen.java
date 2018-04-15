@@ -7,8 +7,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -22,15 +20,15 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 public class InputABScreen extends Stage implements Screen {
 
     private Stage stage;
-    public MyGame game;
+    private MyGame game;
     private boolean backButtonPressed;
     private boolean searchButtonPressed;
 
     private TextField tfFirstPoint;
     private TextField tfSecondPoint;
-    Dialog dialog;
+    private Dialog dialog;
 
-    BitmapFont pointFont;
+    private BitmapFont pointFont;
 
     InputABScreen(final MyGame game) {
 
@@ -121,19 +119,16 @@ public class InputABScreen extends Stage implements Screen {
                         int firstPoint = Integer.parseInt(tfFirstPoint.getText());
                         int secondPoint = Integer.parseInt(tfSecondPoint.getText());
 
-                        if (!(game.getGraph().hasVertex(firstPoint) && game.getGraph().hasVertex(secondPoint))) {
+                        if(firstPoint < 0 || secondPoint < 0)
+                            throw new NumberFormatException("");
+
+                        if (!(game.getGraph().hasVertex(firstPoint) && game.getGraph().hasVertex(secondPoint)))
                             throw new UndirGraph.NoSuchVertexException("no vertex");
-                        }
 
                         game.pathScreen.setFirstPoint(firstPoint);
                         game.pathScreen.setSecondPoint(secondPoint);
                     }
-                    catch (NumberFormatException ex) {
-                        game.existError = true;
-                        game.setScreen(game.inputABScreen);
-                        return;
-                    }
-                    catch (UndirGraph.NoSuchVertexException ex) {
+                    catch (NumberFormatException | UndirGraph.NoSuchVertexException ex) {
                         game.existError = true;
                         game.setScreen(game.inputABScreen);
                         return;

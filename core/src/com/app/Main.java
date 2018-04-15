@@ -12,10 +12,7 @@ public class Main {
         handle = Gdx.files.internal("graph.csv");
         graph = new UndirGraph(handle.readString());
 
-        graph.print();
         System.out.println(graph.searchPath(107,138));
-
-
     }
 
 
