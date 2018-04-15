@@ -13,15 +13,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-
-
-/**
- * Created by UltraBook Samsung on 25.03.2018.
- */
 
 public class InputABScreen extends Stage implements Screen {
 
@@ -32,6 +28,7 @@ public class InputABScreen extends Stage implements Screen {
 
     private TextField tfFirstPoint;
     private TextField tfSecondPoint;
+    Dialog dialog;
 
     BitmapFont pointFont;
 
@@ -47,6 +44,7 @@ public class InputABScreen extends Stage implements Screen {
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.GREEN);
         pixmap.fill();
+
         BitmapFont buttonFont = new BitmapFont();
         buttonFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         buttonFont.getData().setScale(2,2);
@@ -82,15 +80,21 @@ public class InputABScreen extends Stage implements Screen {
         skin.add("green", new Texture(pixmap));
         skin.add("default", buttonFont);//new BitmapFont());
 
-        pointFont = new BitmapFont();
-        pointFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        pointFont.getData().setScale(7,7);
-
         textButtonStyle = new TextButton.TextButtonStyle();
         textButtonStyle.up = skin.newDrawable("green", new Color((float)0.42, (float)0.71, (float)0.27, 1));
         textButtonStyle.font = skin.getFont("default");
         skin.add("default", textButtonStyle);
 
+        // Error dialog
+        dialog = new Dialog("", skin, "default");
+        dialog.setColor(Color.CLEAR);
+        dialog.text("     Error!     ");
+        dialog.button("   OK   ", true); //sends "true" as the result
+
+        // Labels FROM and TO
+        pointFont = new BitmapFont();
+        pointFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        pointFont.getData().setScale(3,3);
 
         //Text Fields for two points
         tfFirstPoint = new TextField("", skin);
@@ -111,15 +115,31 @@ public class InputABScreen extends Stage implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (searchButtonPressed) {
+                    Gdx.input.setOnscreenKeyboardVisible(false);
+
                     try {
-                        game.pathScreen.setFirstPoint(Integer.parseInt(tfFirstPoint.getText()));
-                        game.pathScreen.setSecondPoint(Integer.parseInt(tfSecondPoint.getText()));
-                        Gdx.input.setOnscreenKeyboardVisible(false);
-                        stage.unfocusAll();
+                        int firstPoint = Integer.parseInt(tfFirstPoint.getText());
+                        int secondPoint = Integer.parseInt(tfSecondPoint.getText());
+
+                        if (!(game.getGraph().hasVertex(firstPoint) && game.getGraph().hasVertex(secondPoint))) {
+                            throw new UndirGraph.NoSuchVertexException("no vertex");
+                        }
+
+                        game.pathScreen.setFirstPoint(firstPoint);
+                        game.pathScreen.setSecondPoint(secondPoint);
                     }
-                    catch (NumberFormatException ignored) {
+                    catch (NumberFormatException ex) {
+                        game.existError = true;
+                        game.setScreen(game.inputABScreen);
                         return;
                     }
+                    catch (UndirGraph.NoSuchVertexException ex) {
+                        game.existError = true;
+                        game.setScreen(game.inputABScreen);
+                        return;
+                    }
+
+                    stage.unfocusAll();
                     game.setScreen(game.pathScreen);
                 }
             }
@@ -145,6 +165,7 @@ public class InputABScreen extends Stage implements Screen {
                     tfFirstPoint.setText("");
                     tfSecondPoint.setText("");
                     game.setScreen(game.mainScreen);
+
                 }
             }
 
@@ -153,6 +174,7 @@ public class InputABScreen extends Stage implements Screen {
                 backButtonPressed = true;
                 return true;
             }
+
         });
         stage.addActor(backButton);
 
@@ -162,6 +184,9 @@ public class InputABScreen extends Stage implements Screen {
     public void show() {
 
         Gdx.input.setInputProcessor(stage);
+        if(game.existError) {
+            dialog.show(stage);
+        }
     }
 
     @Override
@@ -170,8 +195,8 @@ public class InputABScreen extends Stage implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         getBatch().begin();
-        pointFont.draw(getBatch(), "A :", 15, game.getHeightScreen() - 200);
-        pointFont.draw(getBatch(), "B :", 15, game.getHeightScreen() - 350);
+        pointFont.draw(getBatch(), "FROM:", 5, game.getHeightScreen() - 240);
+        pointFont.draw(getBatch(), "TO:", 35, game.getHeightScreen() - 380);
         getBatch().end();
 
         stage.act(delta);

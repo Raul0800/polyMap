@@ -109,6 +109,7 @@ public class PointSearchScreen extends Stage implements Screen,GestureListener {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (backButtonPressed) {
                     dispose();
+                    game.existError = false;
                     game.setScreen(game.mapScreen);
                 }
             }
@@ -163,19 +164,14 @@ public class PointSearchScreen extends Stage implements Screen,GestureListener {
     public void setPoint (int point) { this.point = point; }
 
     public void drawPoint() {
-        float scaleX = widthMapPict/stateWMap;
-        float scaleY = heightMapPict/stateHMap;
 
-        if(! game.getGraph().hasVertex(point) ) {
-            throw new UndirGraph.NoSuchVertexException("no vertex\n");
-        }
         pointShape.begin(ShapeRenderer.ShapeType.Filled);
         pointShape.setColor(Color.RED);
 
-        pointShape.rectLine(game.getGraph().getVertex(point).getX()*scaleX+positionMapW,
-                game.getGraph().getVertex(point).getY()*scaleY + positionMapH,
-                game.getGraph().getVertex(point).getX()*scaleX + 8 + positionMapW,
-                game.getGraph().getVertex(point).getY()*scaleY + positionMapH,
+        pointShape.rectLine(game.getGraph().getVertex(point).getX(),
+                game.getGraph().getVertex(point).getY() + game.getHeightScreen() / 6,
+                game.getGraph().getVertex(point).getX() + 8,
+                game.getGraph().getVertex(point).getY() + game.getHeightScreen() / 6 + 8,
                 10);
 
         pointShape.end();

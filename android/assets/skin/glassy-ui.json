@@ -1,21 +1,21 @@
 {
-  com.badlogic.gdx.graphics.g2d.BitmapFont: {
-    font: {
-      file: font-big-export.fnt
+  "com.badlogic.gdx.graphics.g2d.BitmapFont": {
+    "font": {
+      "file": "font-big-export.fnt"
+    } ,
+    "font-big": {
+      "file": "font-big-export.fnt"
     }
-    font-big: {
-      file: font-big-export.fnt
-    }
-  }
-  com.badlogic.gdx.graphics.Color: {
-    black: {
-      r: 0
-      g: 0
-      b: 0
-      a: 1
-    }
-    cyan: {
-      r: 0
+  } ,
+  "com.badlogic.gdx.graphics.Color": {
+    "black": {
+      "r": 0 ,
+      "g": 0 ,
+      "b": 0 ,
+      "a": 1
+    } ,
+    "cyan": {
+      "r": 0,
       g: 1
       b: 0.99166656
       a: 1
@@ -37,7 +37,7 @@
       g: 1
       b: 0
       a: 1
-    }  
+    }
   }
   com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
     pale-blue: {
@@ -66,7 +66,7 @@
         b: 0
         a: 1
       }
-    }  
+    }
   }
   com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
     default: {
@@ -103,7 +103,6 @@
       font: font-big
       up: button
       down: button-down
-    
     }
   }
   com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
@@ -212,18 +211,18 @@
       background: list
     }
   }
-  com.badlogic.gdx.scenes.scene2d.ui.Tree$TreeStyle: {
-    default: {
-      plus: plus
-      minus: minus
-      selection: pale-blue
+  "com.badlogic.gdx.scenes.scene2d.ui.Tree$TreeStyle": {
+    "default": {
+      "plus": "plus",
+      "minus": "minus",
+      "selection": "pale-blue"
     }
-  }
-  com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
-    default: {
-      background: window
-      titleFont: font
-      titleFontColor: black
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle": {
+    "default": {
+      "background": "window",
+      "titleFont": "font",
+      "titleFontColor": "black"
     }
   }
 }

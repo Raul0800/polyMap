@@ -114,6 +114,7 @@ public class PathScreen extends Stage implements Screen,GestureListener {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (isPressed) {
+                    game.existError = false;
                     game.setScreen(game.inputABScreen);
                 }
             }
@@ -134,10 +135,12 @@ public class PathScreen extends Stage implements Screen,GestureListener {
         map = new Texture(currImage);
         batch = new SpriteBatch();
         sprite = new Sprite(map);
+
         stateHMap = heightMapPict;
         stateWMap = widthMapPict;
         sprite.setSize(widthMapPict, heightMapPict);
         sprite.setPosition(positionMapW, positionMapH);
+
         inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(new GestureDetector(this));
@@ -156,7 +159,8 @@ public class PathScreen extends Stage implements Screen,GestureListener {
             drawPath();
         }
         catch (UndirGraph.NoSuchVertexException ex) {
-            System.out.println("no vertex");
+            game.existError = true;
+            game.setScreen(game.inputABScreen);
         }
 
         stage.act(delta);
@@ -168,10 +172,6 @@ public class PathScreen extends Stage implements Screen,GestureListener {
     public void setSecondPoint (int point) { secondPoint = point; }
 
     void drawPath () {
-        if (!(game.getGraph().hasVertex(firstPoint) && game.getGraph().hasVertex(secondPoint))) {
-            throw new UndirGraph.NoSuchVertexException("no vertex");
-        }
-
         line.begin(ShapeRenderer.ShapeType.Filled);
         line.setColor(Color.RED);
         ArrayList<Vertex> path = game.getGraph().searchPath(firstPoint, secondPoint);

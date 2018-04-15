@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -25,9 +26,6 @@ import javax.xml.soap.Text;
 
 import static java.lang.Math.abs;
 
-/**
- * Created by UltraBook Samsung on 27.03.2018.
- */
 
 public class MapScreen extends Stage implements Screen, GestureListener{
     private SpriteBatch batch;
@@ -46,6 +44,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
     public String currImage = new String("GZ_1.png");
     public Texture map;
     private boolean backButtonPressed, searchButtonPressed, switchFlButtonPressed;
+    Dialog dialog;
 
     void initPicture(String currImage){
         stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
@@ -109,6 +108,13 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         textButtonStyle.up = skin.newDrawable("green", new Color((float)0.42, (float)0.71, (float)0.27, 1));
         textButtonStyle.font = skin.getFont("default");
         skin.add("default", textButtonStyle);
+
+
+        // Error dialog
+        dialog = new Dialog("", skin, "default");
+        dialog.setColor(Color.CLEAR);
+        dialog.text("     Error!     ");
+        dialog.button("   OK   ", true); //sends "true" as the result
 
         //Text Button "BACK"
         TextButton backButton = new TextButton("< BACK", skin, "default");
@@ -198,7 +204,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         stage.addActor(textFieldSearch);
 
         //Text Button "SEARCH"
-        TextButton searchButton = new TextButton("GO >", skin, "default");
+        TextButton searchButton = new TextButton("SEARCH >", skin, "default");
         searchButton.setSize(200, 100);
         searchButton.setPosition(game.getWidthScreen() - 200, game.getHeightScreen() - 200);
         searchButton.addListener(new InputListener() {
@@ -207,7 +213,25 @@ public class MapScreen extends Stage implements Screen, GestureListener{
                 if (searchButtonPressed) {
                     dispose();
                     Gdx.input.setOnscreenKeyboardVisible(false);
-                    game.pointSearchScreen.setPoint(Integer.parseInt(textFieldSearch.getText()));
+
+                    try {
+                        int point = Integer.parseInt(textFieldSearch.getText());
+                        if(! game.getGraph().hasVertex(point) ) {
+                            throw new UndirGraph.NoSuchVertexException("no vertex");
+                        }
+                        game.pointSearchScreen.setPoint(point);
+                    }
+                    catch (NumberFormatException ex) {
+                        game.existError = true;
+                        game.setScreen(game.mapScreen);
+                        return;
+                    }
+                    catch (UndirGraph.NoSuchVertexException ex) {
+                        game.existError = true;
+                        game.setScreen(game.mapScreen);
+                        return;
+                    }
+
                     stage.unfocusAll();
                     textFieldSearch.setText("");
                     game.setScreen(game.pointSearchScreen);
@@ -233,6 +257,10 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         inputMultiplexer.addProcessor(new GestureDetector(this));
         Gdx.input.setInputProcessor(inputMultiplexer);
         //Gdx.input.setInputProcessor(stage);
+
+        if(game.existError) {
+            dialog.show(stage);
+        }
     }
 
     @Override
