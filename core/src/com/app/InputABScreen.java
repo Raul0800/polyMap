@@ -90,7 +90,7 @@ public class InputABScreen extends Stage implements Screen {
         // Error dialog
         dialog = new Dialog("", skin, "default");
         dialog.setColor(Color.CLEAR);
-        dialog.text("     Error!     ");
+        dialog.text("   Audience is not found!   ");
         dialog.button("   OK   ", true); //sends "true" as the result
 
         // Labels FROM and TO
