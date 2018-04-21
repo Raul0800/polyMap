@@ -27,10 +27,13 @@ public class InputABScreen extends Stage implements Screen {
     private MyGame game;
     private boolean backButtonPressed;
     private boolean searchButtonPressed;
+    private boolean errorInFieldFrom;
+    private boolean errorInFieldTo;
 
     private TextField tfFirstPoint;
     private TextField tfSecondPoint;
-    private Dialog dialog;
+    private Dialog errorDialogFrom;
+    private Dialog errorDialogTo;
 
     private BitmapFont pointFont;
 
@@ -87,11 +90,17 @@ public class InputABScreen extends Stage implements Screen {
         textButtonStyle.font = skin.getFont("default");
         skin.add("default", textButtonStyle);
 
-        // Error dialog
-        dialog = new Dialog("", skin, "default");
-        dialog.setColor(Color.CLEAR);
-        dialog.text("   Audience is not found!   ");
-        dialog.button("   OK   ", true); //sends "true" as the result
+        // Error dialog FROM
+        errorDialogFrom = new Dialog("", skin, "default");
+        errorDialogFrom.setColor(Color.CLEAR);
+        errorDialogFrom.text("Audience FROM isn't found!");
+        errorDialogFrom.button("   OK   ", true); //sends "true" as the result
+
+        // Error dialog TO
+        errorDialogTo = new Dialog("", skin, "default");
+        errorDialogTo.setColor(Color.CLEAR);
+        errorDialogTo.text("Audience TO isn't found!");
+        errorDialogTo.button("   OK   ", true); //sends "true" as the result
 
         // Labels FROM and TO
         pointFont = new BitmapFont();
@@ -120,15 +129,26 @@ public class InputABScreen extends Stage implements Screen {
                     Gdx.input.setOnscreenKeyboardVisible(false);
 
                     deleteWaiter();
+                    errorInFieldFrom = true;
+                    errorInFieldTo = true;
                     try {
                         int firstPoint = Integer.parseInt(tfFirstPoint.getText());
+                        errorInFieldFrom = false;
                         int secondPoint = Integer.parseInt(tfSecondPoint.getText());
+                        errorInFieldTo = false;
 
                         if(firstPoint < 0 || secondPoint < 0)
                             throw new NumberFormatException("");
 
-                        if (!(game.getGraph().hasVertex(firstPoint) && game.getGraph().hasVertex(secondPoint)))
+                        if (!game.getGraph().hasVertex(firstPoint)) {
+                            errorInFieldFrom = true;
                             throw new UndirGraph.NoSuchVertexException("no vertex");
+                        }
+
+                        if(!game.getGraph().hasVertex(secondPoint)) {
+                            errorInFieldTo = true;
+                            throw new UndirGraph.NoSuchVertexException("no vertex");
+                        }
 
                         game.pathScreen.setFirstPoint(firstPoint);
                         game.pathScreen.setSecondPoint(secondPoint);
@@ -138,7 +158,6 @@ public class InputABScreen extends Stage implements Screen {
                         game.setScreen(game.inputABScreen);
                         return;
                     }
-
                     stage.unfocusAll();
                     game.setScreen(game.pathScreen);
                 }
@@ -222,7 +241,12 @@ public class InputABScreen extends Stage implements Screen {
 
         Gdx.input.setInputProcessor(stage);
         if(game.existError) {
-            dialog.show(stage);
+            if(errorInFieldFrom)
+                errorDialogFrom.show(stage);
+            if(errorInFieldTo)
+                errorDialogTo.show(stage);
+            errorInFieldFrom = false;
+            errorInFieldTo = false;
         }
     }
 
