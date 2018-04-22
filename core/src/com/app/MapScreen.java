@@ -1,6 +1,8 @@
 package com.app;
 
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -17,12 +19,16 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
+import static com.app.MainScreen.getTintedDrawable;
 
 public class MapScreen extends Stage implements Screen, GestureListener{
     private SpriteBatch batch;
@@ -47,6 +53,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 //////////////////////////
         this.game = game;
         stage = new Stage(new ScreenViewport());
+        int col_width = game.getWidthScreen() / 3;
         Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
 
         //Settings colours for toolbox
@@ -250,7 +257,41 @@ public class MapScreen extends Stage implements Screen, GestureListener{
             }
         });
         stage.addActor(searchButton);
+        //добавление выползающего окна с легендой
+        final float sidePanelWidth = col_width;
+        final float sidePanelHeight = game.getHeightScreen();
 
+
+         Texture legend = new Texture("data/slide_panel_legend/legend.png");
+        Texture stair = new Texture("data/slide_panel_legend/stair.png");
+        Texture ws = new Texture("data/slide_panel_legend/ws.png");
+        Texture classroom = new Texture("data/slide_panel_legend/classroom.png");
+
+        Image legendImage = new Image(legend);
+        Image stairImage = new Image(stair);
+        Image wsImage = new Image(ws);
+        Image classroomImage = new Image(classroom);
+
+        final SidePanel drawer = new SidePanel(sidePanelWidth, sidePanelHeight);
+        TextureAtlas atlas = new TextureAtlas("data/menu_ui.atlas");
+        final Image image_background = new Image(getTintedDrawable(atlas.findRegion("image_background"), Color.WHITE));
+        // add items into drawer panel.
+        drawer.add(legendImage).pad(0, 0, game.getHeightScreen()/10, 0).expandX().row();
+      //  drawer.add().height(game.getHeightScreen() / 10).row(); // empty
+        drawer.add(stairImage).pad(0, 0, 0, 0).expandX().row();
+        drawer.add().height(game.getHeightScreen() / 10).row(); // empty
+        drawer.add(classroomImage).pad(0, 0, 0, 0).expandX().row();
+        drawer.add().height(game.getHeightScreen() / 10).row(); // empty
+        drawer.add(wsImage).pad(0, 0, 0, 0).expandX().row();
+        drawer.add().height(game.getHeightScreen() / 3).row(); // empty
+
+        drawer.setBackground(image_background.getDrawable());
+        drawer.bottom().left();
+        drawer.setWidthStartDrag(40f);
+        drawer.setWidthBackDrag(0F);
+        drawer.setTouchable(Touchable.enabled);
+
+        stage.addActor(drawer);
     }
 
     public void getWaiter(){

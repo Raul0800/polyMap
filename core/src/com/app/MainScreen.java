@@ -45,7 +45,7 @@ public class MainScreen extends Stage implements Screen {
             actor.addListener(listener);
     }
 
-    private static Drawable getTintedDrawable(TextureAtlas.AtlasRegion region, Color color) {
+    protected static Drawable getTintedDrawable(TextureAtlas.AtlasRegion region, Color color) {
         Sprite sprite = new Sprite(region);
         sprite.setColor(color);
         return new SpriteDrawable(sprite);
