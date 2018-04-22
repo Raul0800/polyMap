@@ -51,6 +51,57 @@ public class MainScreen extends Stage implements Screen {
         return new SpriteDrawable(sprite);
     }
 
+    private Button createUselessButton(String textureNameUp,
+                                              String textureNameDown,
+                                              float width, float height,
+                                              float x, float y) {
+        Texture tDown = new Texture(textureNameDown);
+        Texture tUp = new Texture(textureNameUp);
+
+        Drawable drawableUp = new TextureRegionDrawable(new TextureRegion(tUp));
+        Drawable drawableDown = new TextureRegionDrawable(new TextureRegion(tDown));
+
+        ImageButton button = new ImageButton(drawableUp, drawableDown);
+        button.setSize(width, height);
+        button.setPosition(x, y);
+        button.addListener(new InputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if (isPressed) {
+                    dispose();
+                    game.existError = false;
+                    //isPressed = false;
+                    //game.setScreen(screen);
+                    isPressed = false;
+                }
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                isPressed = true;
+                //Change colour for waiter
+                Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+
+                Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+                pixmap.setColor(Color.GREEN);
+                pixmap.fill();
+                BitmapFont myFont = new BitmapFont();
+                myFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+                myFont.getData().setScale(2, 2);
+                skin.add("green", new Texture(pixmap));
+                skin.add("default", myFont);//new BitmapFont());
+
+                TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+                textButtonStyle.up = skin.newDrawable("black", new Color((float) 0, (float) 0, (float) 0, 0.5f));
+                textButtonStyle.font = skin.getFont("default");
+                skin.add("default", textButtonStyle);
+
+                return true;
+            }
+        });
+        return button;
+    }
+
     private Button createScreenChangingButton(String textureNameUp,
                                               String textureNameDown,
                                               float width, float height,
@@ -135,27 +186,29 @@ public class MainScreen extends Stage implements Screen {
                 "search_on_map\\down\\Search_Map_200.png",
                 col_width, row_height,
                 2 * col_width, this.game.getHeightScreen() - row_height - toolBar_height, this.game.inputABScreen));
+
         //Gallery button
-        stage.addActor(createScreenChangingButton("gallery\\up\\Gallery_200.png",
-                "gallery\\down\\Gallery_200.png",
+        stage.addActor(createUselessButton("gallery\\Gallery_200.png",
+                "gallery\\Gallery_200.png",
                 col_width, row_height,
-                0, this.game.getHeightScreen() - 2 * row_height - toolBar_height, this.game.secondScreen));
+                0, this.game.getHeightScreen() - 2 * row_height - toolBar_height/*, this.game.mainScreen)*/));
+
         //List of departments button
-        stage.addActor(createScreenChangingButton(
-                "department_list\\up\\ListOfDepartments_200.png",
-                "department_list\\down\\ListOfDepartments_200.png",
+        stage.addActor(createUselessButton(
+                "department_list\\ListOfDepartments_200.png",
+                "department_list\\ListOfDepartments_200.png",
                 col_width, row_height,
-                2 * col_width, this.game.getHeightScreen() - 2 * row_height - toolBar_height, this.game.secondScreen));
+                2 * col_width, this.game.getHeightScreen() - 2 * row_height - toolBar_height/*, this.game.mainScreen)*/));
         //Favorites button
-        stage.addActor(createScreenChangingButton("favorites\\up\\Fav_200.png",
-                "favorites\\down\\Fav_200.png",
+        stage.addActor(createUselessButton("favorites\\Fav_200.png",
+                "favorites\\Fav_200.png",
                 col_width, row_height,
-                0, this.game.getHeightScreen() - 3 * row_height - toolBar_height, this.game.secondScreen));
+                0, this.game.getHeightScreen() - 3 * row_height - toolBar_height/*, this.game.mainScreen)*/));
         //Settings button
-        stage.addActor(createScreenChangingButton("settings\\up\\Settings_200.png",
-                "settings\\down\\Settings_200.png",
+        stage.addActor(createUselessButton("settings\\Settings_200.png",
+                "settings\\Settings_200.png",
                 col_width, row_height,
-                2 * col_width, this.game.getHeightScreen() - 3 * row_height - toolBar_height, this.game.secondScreen));
+                2 * col_width, this.game.getHeightScreen() - 3 * row_height - toolBar_height/*, this.game.mainScreen)*/));
         //Toolbar up ans down
         //Change colour
         Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
@@ -270,8 +323,8 @@ public class MainScreen extends Stage implements Screen {
 
     @Override
     public void resize(int width, int height) {
-    }
 
+    }
     @Override
     public void pause() {
     }
