@@ -6,12 +6,8 @@ import com.badlogic.gdx.files.FileHandle;
 
 public class MyGame extends Game {
 
-    MainScreen mainScreen;
     SecondScreen secondScreen;
-    InputABScreen inputABScreen;
-    PathScreen pathScreen;
     MapScreen mapScreen;
-    PointSearchScreen pointSearchScreen;
 
     private int widthScreen, heightScreen;
 
@@ -26,12 +22,8 @@ public class MyGame extends Game {
         existError = false;
 
         this.secondScreen = new SecondScreen(this);
-        this.inputABScreen = new InputABScreen(this);
-        this.pathScreen = new PathScreen(this);
         this.mapScreen = new MapScreen(this);
-        this.pointSearchScreen = new PointSearchScreen(this);
-        this.mainScreen = new MainScreen(this);
-        setScreen(mainScreen);
+        setScreen(mapScreen);
 
         FileHandle handle = Gdx.files.internal("graph.csv");
         graph = new UndirGraph(handle.readString());

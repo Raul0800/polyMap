@@ -1,8 +1,7 @@
 package com.app;
 
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -19,33 +18,34 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import static com.app.MainScreen.getTintedDrawable;
 
 public class MapScreen extends Stage implements Screen, GestureListener{
     private SpriteBatch batch;
     private Sprite sprite;
-    private  int widthMapPict;//ширина картинки карты
+    private int widthMapPict;//ширина картинки карты
     private int heightMapPict;//высота картинки карты
-    private  float positionMapW, positionMapH;//позиция по У картинки карты
-    private  int stateWidthScreen,stateHeightScreen;//позиция по Х картинки карты
+    private float positionMapW, positionMapH;//позиция по У картинки карты
+    private int stateWidthScreen,stateHeightScreen;//позиция по Х картинки карты
     //все переменные,описанные выше, изменяются при масштабировании
-    private  float statePositionW,statePositionH,stateWMap,stateHMap;// неизменная позиция и размеры картинки
+    private float statePositionW,statePositionH,stateWMap,stateHMap;// неизменная позиция и размеры картинки
+
+    private int firstPoint, secondPoint;
+    ShapeRenderer pointShape;
+    private boolean onePointMode = false;
 
     private Stage stage;
     private MyGame game;
     private TextField textFieldSearch;
     private String currImage = "GZ_1.png";
     private Texture map;
-    private boolean backButtonPressed, searchButtonPressed, switchFlButtonPressed;
+    private boolean searchButtonPressed, switchFlButtonPressed;
     private Dialog dialog;
 
 
@@ -105,32 +105,6 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         dialog.setColor(Color.CLEAR);
         dialog.text("   Audience is not found!   ");
         dialog.button("   OK   ", true); //sends "true" as the result
-
-        //Text Button "BACK"
-        TextButton backButton = new TextButton("< BACK", skin, "default");
-        backButton.setSize(250, 100);
-        backButton.setPosition(0, game.getHeightScreen()-100);
-        backButton.addListener(new InputListener() {
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (backButtonPressed) {
-                    dispose();
-                    Gdx.input.setOnscreenKeyboardVisible(false);
-                    stage.unfocusAll();
-                    textFieldSearch.setText("");
-                    game.setScreen(game.mainScreen);
-                    deleteWaiter();
-                }
-            }
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                getWaiter();
-                backButtonPressed = true;
-                return true;
-            }
-        });
-        stage.addActor(backButton);
 
         //Обозначение для ниже стоящих кнопок.
         TextButton nameOfSwitchFlButton = new TextButton("Floors", skin, "default");
@@ -227,25 +201,23 @@ public class MapScreen extends Stage implements Screen, GestureListener{
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (searchButtonPressed) {
-                    dispose();
+
                     Gdx.input.setOnscreenKeyboardVisible(false);
                     deleteWaiter();
                     try {
-                        int point = Integer.parseInt(textFieldSearch.getText());
-                        if(! game.getGraph().hasVertex(point) ) {
+                        firstPoint = Integer.parseInt(textFieldSearch.getText());
+                        if(! game.getGraph().hasVertex(firstPoint) ) {
                             throw new UndirGraph.NoSuchVertexException("no vertex");
                         }
-                        game.pointSearchScreen.setPoint(point);
                     }
                     catch (NumberFormatException | UndirGraph.NoSuchVertexException ex) {
                         game.existError = true;
-                        game.setScreen(game.mapScreen);
                         return;
                     }
-
                     stage.unfocusAll();
-                    textFieldSearch.setText("");
-                    game.setScreen(game.pointSearchScreen);
+
+                    pointShape = new ShapeRenderer();
+                    onePointMode = true;
                 }
             }
 
@@ -257,42 +229,22 @@ public class MapScreen extends Stage implements Screen, GestureListener{
             }
         });
         stage.addActor(searchButton);
-        //добавление выползающего окна с легендой
-        final float sidePanelWidth = col_width;
-        final float sidePanelHeight = game.getHeightScreen();
-
-
-         Texture legend = new Texture("data/slide_panel_legend/legend.png");
-        Texture stair = new Texture("data/slide_panel_legend/stair.png");
-        Texture ws = new Texture("data/slide_panel_legend/ws.png");
-        Texture classroom = new Texture("data/slide_panel_legend/classroom.png");
-
-        Image legendImage = new Image(legend);
-        Image stairImage = new Image(stair);
-        Image wsImage = new Image(ws);
-        Image classroomImage = new Image(classroom);
-
-        final SidePanel drawer = new SidePanel(sidePanelWidth, sidePanelHeight);
-        TextureAtlas atlas = new TextureAtlas("data/menu_ui.atlas");
-        final Image image_background = new Image(getTintedDrawable(atlas.findRegion("image_background"), Color.WHITE));
-        // add items into drawer panel.
-        drawer.add(legendImage).pad(0, 0, game.getHeightScreen()/10, 0).expandX().row();
-      //  drawer.add().height(game.getHeightScreen() / 10).row(); // empty
-        drawer.add(stairImage).pad(0, 0, 0, 0).expandX().row();
-        drawer.add().height(game.getHeightScreen() / 10).row(); // empty
-        drawer.add(classroomImage).pad(0, 0, 0, 0).expandX().row();
-        drawer.add().height(game.getHeightScreen() / 10).row(); // empty
-        drawer.add(wsImage).pad(0, 0, 0, 0).expandX().row();
-        drawer.add().height(game.getHeightScreen() / 3).row(); // empty
-
-        drawer.setBackground(image_background.getDrawable());
-        drawer.bottom().left();
-        drawer.setWidthStartDrag(40f);
-        drawer.setWidthBackDrag(0F);
-        drawer.setTouchable(Touchable.enabled);
-
-        stage.addActor(drawer);
     }
+
+    public void drawPoint() {
+
+        pointShape.begin(ShapeRenderer.ShapeType.Filled);
+        pointShape.setColor(Color.RED);
+
+        pointShape.rectLine(game.getGraph().getVertex(firstPoint).getX(),
+                game.getGraph().getVertex(firstPoint).getY() + game.getHeightScreen() / 6,
+                game.getGraph().getVertex(firstPoint).getX() + 8,
+                game.getGraph().getVertex(firstPoint).getY() + game.getHeightScreen() / 6 + 8,
+                10);
+
+        pointShape.end();
+    }
+
 
     public void getWaiter(){
         //Change colour for waiter
@@ -363,6 +315,10 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         sprite.draw(batch);
         batch.end();
         stage.act(delta);
+
+        if(onePointMode)
+            drawPoint();
+
         stage.draw();
     }
 

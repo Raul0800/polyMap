@@ -79,7 +79,7 @@ public class SecondScreen extends Stage implements Screen {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (isPressed) {
                     dispose();
-                    game.setScreen(game.mainScreen);
+                    game.setScreen(game.mapScreen);
                 }
             }
             @Override
