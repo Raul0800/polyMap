@@ -1,6 +1,7 @@
 package com.app;
 
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
@@ -47,6 +48,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
     private Texture map;
     private boolean searchButtonPressed, switchFlButtonPressed;
     private Dialog dialog;
+    private OrthographicCamera camera = null;
 
 
     MapScreen(final MyGame game) {
@@ -294,6 +296,10 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         sprite.setSize(widthMapPict, heightMapPict);
         sprite.setPosition(positionMapW, positionMapH);
 
+        camera = new OrthographicCamera(stateWidthScreen, stateHeightScreen);
+        camera.position.set(camera.viewportWidth/2,camera.viewportHeight/2,0);
+
+        camera.update();
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         //Gdx.input.setInputProcessor(stage);///////////////!!!!!!!!!!!!!!!!!!!!!!!!
         inputMultiplexer.addProcessor(stage);
@@ -308,6 +314,9 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
     @Override
     public void render(float delta) {
+
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -324,6 +333,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
     @Override
     public void resize(int width, int height) {
+        camera.position.set(camera.viewportWidth/2,camera.viewportHeight/2,0);
     }
 
     @Override
@@ -366,10 +376,12 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        positionMapH = positionMapH - deltaY;
-        positionMapW = positionMapW + deltaX;
-        sprite.setPosition(positionMapW, positionMapH);
-        return true;
+        //positionMapH = positionMapH - deltaY;
+        //positionMapW = positionMapW + deltaX;
+        //sprite.setPosition(positionMapW, positionMapH);
+        camera.translate(-deltaX ,deltaY );
+        camera.update();
+        return false;
     }
 
     @Override
@@ -379,19 +391,14 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
     @Override
     public boolean zoom(float initialDistance, float distance) {
-        final int coeffForScale = 10;
-        if (initialDistance < distance) {
-            widthMapPict += coeffForScale;
-            heightMapPict += coeffForScale;
-
-        }
-        if (initialDistance >= distance && widthMapPict > stateWidthScreen)
-        {
-            widthMapPict -= coeffForScale;
-            heightMapPict -= coeffForScale;
-        }
-        sprite.setSize(widthMapPict, heightMapPict);
-        sprite.setPosition(positionMapW,positionMapH);
+        System.out.println("start camera.zoom "+camera.zoom);
+        camera.zoom = initialDistance/(distance)*camera.zoom;
+        System.out.println("initialDistance "+initialDistance);
+        System.out.println("distance " + distance);
+        System.out.println("initialDistance/distance " + initialDistance/distance);
+        System.out.println("camera.zoom " + camera.zoom);
+        //camera.zoom = (initialDistance/(distance))*camera.zoom;
+        camera.update();
         return true;
     }
 
