@@ -1,6 +1,7 @@
 package com.app;
 
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
@@ -49,77 +50,42 @@ public class MapScreen extends Stage implements Screen, GestureListener{
     private boolean searchButtonPressed, switchFlButtonPressed;
     private Dialog dialog;
     private OrthographicCamera camera = null;
+    private BitmapFont fontForMenu = getFont(Color.BLACK, 42);
 
 
     MapScreen(final MyGame game) {
-//////////////////////////
         this.game = game;
         stage = new Stage(new ScreenViewport());
-        int col_width = game.getWidthScreen() / 3;
-        Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
-
-        //Settings colours for toolbox
-        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.GREEN);
-        pixmap.fill();
-        BitmapFont myFont = new BitmapFont();
-        myFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        myFont.getData().setScale(2,2);
-        skin.add("green", new Texture(pixmap));
-        skin.add("default", myFont);//new BitmapFont());
-
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = skin.newDrawable("green", new Color((float)0.42, (float)0.68, (float)0.27, 1));
-        textButtonStyle.font = skin.getFont("default");
-        skin.add("default", textButtonStyle);
-
-        //Toolbar up ans down
-        int toolBar_height = 100;
-
-        TextButton toolbarUp = new TextButton("", skin, "default");
-        toolbarUp.setSize(game.getWidthScreen(), toolBar_height);
-        toolbarUp.setPosition(0, game.getHeightScreen() - 100);
-        stage.addActor(toolbarUp);
-
-        TextButton toolbarDown = new TextButton("", skin, "default");
-        toolbarDown.setSize(game.getWidthScreen(), 50);
-        toolbarDown.setPosition(0, 0);
-        stage.addActor(toolbarDown);
-
-        //Settings colours for buttons
-        pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.GREEN);
-        pixmap.fill();
-        myFont = new BitmapFont();
-        myFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        myFont.getData().setScale(2,2);
-        skin.add("green", new Texture(pixmap));
-        skin.add("default", myFont);//new BitmapFont());
-
-        textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = skin.newDrawable("green", new Color((float)0.42, (float)0.71, (float)0.27, 1));
-        textButtonStyle.font = skin.getFont("default");
-        skin.add("default", textButtonStyle);
-
+        Color colButUp = new Color(0.7f, 0.5f, 1, 0.6f);
+        Color colButDown = new Color(0.7f,0.3f, 0.7f, 0.3f);
+        int sizeFontBut = 25;
 
         // Error dialog
-        dialog = new Dialog("", skin, "default");
+        dialog = new Dialog("", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
         dialog.setColor(Color.CLEAR);
         dialog.text("   Audience is not found!   ");
         dialog.button("   OK   ", true); //sends "true" as the result
 
         //Обозначение для ниже стоящих кнопок.
-        TextButton nameOfSwitchFlButton = new TextButton("Floors", skin, "default");
-        nameOfSwitchFlButton.setSize(100, 50);
-        nameOfSwitchFlButton.setPosition(game.getWidthScreen() - 150, game.getHeightScreen() - 260);
-        stage.addActor(nameOfSwitchFlButton);
+
+        float sizeHeight_bFloor = game.getHeightScreen() * 0.07f,
+                sizeWidth_bFloor = game.getWidthScreen() * 0.07f;
+
+        float positionHeight_bFloor = game.getHeightScreen() * 0.8f,
+                positionWidth_bFloor = game.getWidthScreen() - sizeWidth_bFloor - game.getWidthScreen() * 0.01f;
+
+        //TextButton nameOfSwitchFlButton = new TextButton("Floors", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
+        //nameOfSwitchFlButton.setSize(sizeWidth_bFloor, sizeHeight_bFloor);
+        //nameOfSwitchFlButton.setPosition(positionWidth_bFloor, positionHeight_bFloor);
+        //nameOfSwitchFlButton.setName("nameOfSwitchFlButton");
+        //stage.addActor(nameOfSwitchFlButton);
 
         //Массив кнопок отвечающих за выбор этажа. Создано в виде массива с возможностью дальнейшнего
         //расширения.
         TextButton []switchFlButton = new TextButton[2];
-        switchFlButton[0] = new TextButton("0", skin, "default");
-        switchFlButton[0].setSize(100, 50);
-        switchFlButton[0].setPosition(game.getWidthScreen() - 150, game.getHeightScreen() - 311);
+        switchFlButton[0] = new TextButton("0", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
+        switchFlButton[0].setSize(sizeWidth_bFloor, sizeHeight_bFloor);
+        switchFlButton[0].setPosition(positionWidth_bFloor, positionHeight_bFloor - sizeHeight_bFloor);
         switchFlButton[0].addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -127,17 +93,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
                     if (!currImage.equals("GZ_0.png")) {
                         dispose();
                         currImage = "GZ_0.png";
-                        stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
-                        stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
-                        heightMapPict = heightMapPict / 2;
-                        statePositionW = positionMapW = 0;
-                        statePositionH = positionMapH = heightMapPict/3;
-
-                        map = new Texture(currImage);
-                        batch = new SpriteBatch();
-                        sprite = new Sprite(map);
-                        sprite.setSize(widthMapPict, heightMapPict);
-                        sprite.setPosition(positionMapW, positionMapH);
+                        setStartPositionMap();
                     }
                     switchFlButtonPressed = false;
                     deleteWaiter();
@@ -151,11 +107,12 @@ public class MapScreen extends Stage implements Screen, GestureListener{
                 return true;
             }
         });
+        switchFlButton[0].setName("switchFlButton[0]");
         stage.addActor(switchFlButton[0]);
 
-        switchFlButton[1] = new TextButton("1", skin, "default");
-        switchFlButton[1].setSize(100, 50);
-        switchFlButton[1].setPosition(game.getWidthScreen() - 150, game.getHeightScreen() - 362);
+        switchFlButton[1] = new TextButton("1", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
+        switchFlButton[1].setSize(sizeWidth_bFloor, sizeHeight_bFloor);
+        switchFlButton[1].setPosition(positionWidth_bFloor, positionHeight_bFloor - 2*sizeHeight_bFloor);
         switchFlButton[1].addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -163,17 +120,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
                     if (!currImage.equals("GZ_1.png")) {
                         dispose();
                         currImage = "GZ_1.png";
-                        stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
-                        stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
-                        heightMapPict = heightMapPict / 2;
-                        statePositionW = positionMapW = 0;
-                        statePositionH = positionMapH = heightMapPict/3;
-
-                        map = new Texture(currImage);
-                        batch = new SpriteBatch();
-                        sprite = new Sprite(map);
-                        sprite.setSize(widthMapPict, heightMapPict);
-                        sprite.setPosition(positionMapW, positionMapH);
+                        setStartPositionMap();
                     }
                     switchFlButtonPressed = false;
                     deleteWaiter();
@@ -187,23 +134,36 @@ public class MapScreen extends Stage implements Screen, GestureListener{
                 return true;
             }
         });
+        switchFlButton[1].setName("switchFlButton[1]");
         stage.addActor(switchFlButton[1]);
 
         //Text Field for point
-        textFieldSearch = new TextField("", skin);
-        textFieldSearch.setSize(game.getWidthScreen() - 200, 100);
-        textFieldSearch.setPosition(0, game.getHeightScreen() - 200);
-        stage.addActor(textFieldSearch);
+        float sizeHeight_fSearch = game.getHeightScreen() * 0.07f,
+                sizeWidth_fSearch = game.getWidthScreen() * 0.98f;
 
+        float positionHeight_fSearch = game.getHeightScreen() * 0.91f,
+                positionWidth_fSearch = game.getWidthScreen() * 0.01f;
+
+        textFieldSearch = new TextField("Search in GZ", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
+        textFieldSearch.setSize(sizeWidth_fSearch, sizeHeight_fSearch);
+        textFieldSearch.setPosition(positionWidth_fSearch, positionHeight_fSearch);
+        textFieldSearch.setName("textFieldSearch");
+        stage.addActor(textFieldSearch);
+        //Skin testSkin = getSkin(new Color(1,0,0,1), );
         //Text Button "SEARCH"
-        TextButton searchButton = new TextButton("SEARCH >", skin, "default");
-        searchButton.setSize(200, 100);
-        searchButton.setPosition(game.getWidthScreen() - 200, game.getHeightScreen() - 200);
+        float sizeHeight_bSearch = game.getHeightScreen() * 0.07f,
+                sizeWidth_bSearch = game.getWidthScreen() * 0.17f;
+
+        float positionHeight_bSearch = game.getHeightScreen() * 0.91f,
+                positionWidth_bSearch = game.getWidthScreen() * 0.81f;
+
+        TextButton searchButton = new TextButton("Поиск", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
+        searchButton.setSize(sizeWidth_bSearch, sizeHeight_bSearch);
+        searchButton.setPosition(positionWidth_bSearch, positionHeight_bSearch);
         searchButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (searchButtonPressed) {
-
                     Gdx.input.setOnscreenKeyboardVisible(false);
                     deleteWaiter();
                     try {
@@ -230,7 +190,60 @@ public class MapScreen extends Stage implements Screen, GestureListener{
                 return true;
             }
         });
+
         stage.addActor(searchButton);
+    }
+    //Новый метод для шрифтов!
+    public BitmapFont getFont (Color color, int size){
+        BitmapFont font;
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("skin/font.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 42;
+        parameter.color = color;
+
+        parameter.characters = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ\"\n" +
+                "                                              + \"абвгдеёжзийклмнопрстуфхцчшщъыьэюя\"\n" +
+                "                                              + \"1234567890.,:;_¡!¿?\"\n" +
+                "                                              + \"abcdefghijklmnopqrstuvwxyz\"n" +
+                "                                              +  \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\"n";
+
+        {
+            final float sizeHeight = 1280, sizeWidth = 720;
+            parameter.size = (int)(parameter.size * (Gdx.graphics.getWidth() / sizeWidth));
+        }
+        font = generator.generateFont(parameter);
+        generator.dispose(); // don't forget to dispose to avoid memory leaks!
+        return font;
+    }
+
+    public Skin getSkin (Color colorUp, Color colorDown, int sizeFont, Color colorFont){
+        Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+        BitmapFont myFont = getFont(colorFont, sizeFont);
+
+        myFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        skin.add("default", myFont);//new BitmapFont());
+
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.up = skin.newDrawable("green", colorUp);
+        textButtonStyle.down = skin.newDrawable("green", colorDown);
+        textButtonStyle.font = skin.getFont("default");
+        skin.add("default", textButtonStyle);
+
+        return skin;
+    }
+
+    public void setStartPositionMap (){
+        stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
+        stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
+        heightMapPict = heightMapPict / 2;
+        statePositionW = positionMapW = 0;
+        statePositionH = positionMapH = heightMapPict/3;
+
+        map = new Texture(currImage);
+        batch = new SpriteBatch();
+        sprite = new Sprite(map);
+        sprite.setSize(widthMapPict, heightMapPict);
+        sprite.setPosition(positionMapW, positionMapH);
     }
 
     public void drawPoint() {
@@ -247,31 +260,20 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         pointShape.end();
     }
 
-
     public void getWaiter(){
-        //Change colour for waiter
-        Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+        float positionHeightWaiter = game.getHeightScreen() * 0.4f;
+        float positionWidthWaiter = 0;
 
-        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.GREEN);
-        pixmap.fill();
-        BitmapFont myFont = new BitmapFont();
-        myFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        myFont.getData().setScale(2,2);
-        skin.add("green", new Texture(pixmap));
-        skin.add("default", myFont);//new BitmapFont());
-
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = skin.newDrawable("black", new Color((float)0, (float)0, (float)0, 0.5f));
-        textButtonStyle.font = skin.getFont("default");
-        skin.add("default", textButtonStyle);
-
-        int waiter_height = 100;
+        float sizeHeightWaiter = game.getHeightScreen() * 0.15f;
+        float sizeWidthWaiter = game.getWidthScreen();
+        Color colorWaiter = new Color(0,0,0,0.5f);
+        Color colorFont = new Color (1,1,1,1);
+        int sizeFont = 35;
 
         TextButton waiter = new TextButton("Wait, please...",
-                skin, "default");
-        waiter.setSize(game.getWidthScreen(), waiter_height);
-        waiter.setPosition(0, game.getHeightScreen() / 2);
+                getSkin(colorWaiter, colorWaiter, sizeFont, colorFont), "default");
+        waiter.setSize(sizeWidthWaiter, sizeHeightWaiter);
+        waiter.setPosition(positionWidthWaiter, positionHeightWaiter);
         waiter.setName("waiter");
         stage.addActor(waiter);
     }
@@ -284,17 +286,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
     }
 
     public void show() {
-        stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
-        stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
-        heightMapPict = heightMapPict / 2;
-        statePositionW = positionMapW = 0;
-        statePositionH = positionMapH = heightMapPict/3;
-
-        map = new Texture(currImage);
-        batch = new SpriteBatch();
-        sprite = new Sprite(map);
-        sprite.setSize(widthMapPict, heightMapPict);
-        sprite.setPosition(positionMapW, positionMapH);
+        setStartPositionMap ();
 
         camera = new OrthographicCamera(stateWidthScreen, stateHeightScreen);
         camera.position.set(camera.viewportWidth/2,camera.viewportHeight/2,0);
@@ -392,7 +384,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
     @Override
     public boolean zoom(float initialDistance, float distance) {
         System.out.println("start camera.zoom "+camera.zoom);
-        camera.zoom = initialDistance/(distance)*camera.zoom;
+        camera.zoom = initialDistance/(distance)/camera.zoom;
         System.out.println("initialDistance "+initialDistance);
         System.out.println("distance " + distance);
         System.out.println("initialDistance/distance " + initialDistance/distance);

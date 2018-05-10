@@ -13,4 +13,5 @@ eclipse.project {
 
 dependencies {
     compile 'net.java.jinput:jinput:2.0.5'
+    compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 }
