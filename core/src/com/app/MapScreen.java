@@ -63,7 +63,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         // Error dialog
         dialog = new Dialog("", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
         dialog.setColor(Color.CLEAR);
-        dialog.text("   Audience is not found!   ");
+        dialog.text("   Аудитория не найдена!   ");
         dialog.button("   OK   ", true); //sends "true" as the result
 
         //Обозначение для ниже стоящих кнопок.
