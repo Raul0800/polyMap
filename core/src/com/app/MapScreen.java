@@ -1,20 +1,20 @@
 package com.app;
 
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.graphics.g2d.freetype;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.input.GestureDetector.GestureListener;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.input.GestureDetector.GestureListener;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -43,10 +43,10 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
     private Stage stage;
     private MyGame game;
-    private TextField textFieldSearch;
+    private TextField firstPointTextField, secondPointTextField;
     private String currImage = "GZ_1.png";
     private Texture map;
-    private boolean searchButtonPressed, switchFlButtonPressed;
+    private boolean searchButtonPressed, switchFlButtonPressed, twoPointModeButtonPressed, onePointModeButtonPressed;
     private Dialog dialog;
     private OrthographicCamera camera = null;
     //private BitmapFont fontForMenu = getFont(Color.BLACK, 42);
@@ -143,11 +143,14 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         float positionHeight_fSearch = game.getHeightScreen() * 0.91f,
                 positionWidth_fSearch = game.getWidthScreen() * 0.01f;
 
-        textFieldSearch = new TextField("Search in GZ", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
-        textFieldSearch.setSize(sizeWidth_fSearch, sizeHeight_fSearch);
-        textFieldSearch.setPosition(positionWidth_fSearch, positionHeight_fSearch);
-        textFieldSearch.setName("textFieldSearch");
-        stage.addActor(textFieldSearch);
+        firstPointTextField = new TextField("", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
+        firstPointTextField.setSize(sizeWidth_fSearch, sizeHeight_fSearch);
+        firstPointTextField.setMessageText("Search in GZ");
+        firstPointTextField.setPosition(positionWidth_fSearch, positionHeight_fSearch);
+        firstPointTextField.setName("firstPointTextField");
+        stage.addActor(firstPointTextField);
+
+
         //Skin testSkin = getSkin(new Color(1,0,0,1), );
         //Text Button "SEARCH"
         float sizeHeight_bSearch = game.getHeightScreen() * 0.07f,
@@ -156,44 +159,55 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         float positionHeight_bSearch = game.getHeightScreen() * 0.91f,
                 positionWidth_bSearch = game.getWidthScreen() * 0.81f;
 
-        TextButton searchButton = new TextButton("Поиск", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
-        searchButton.setSize(sizeWidth_bSearch, sizeHeight_bSearch);
-        searchButton.setPosition(positionWidth_bSearch, positionHeight_bSearch);
-        searchButton.addListener(new InputListener() {
+        final TextButton onePointModeButton = new TextButton("1pMode", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
+        final TextButton twoPointModeButton = new TextButton("2pMode", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
+
+        onePointModeButton.setSize(sizeWidth_bSearch, sizeHeight_bSearch);
+        onePointModeButton.setPosition(100, 100);
+        onePointModeButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (searchButtonPressed) {
-                    Gdx.input.setOnscreenKeyboardVisible(false);
+                if (onePointModeButtonPressed) {
                     deleteWaiter();
-                    try {
-                        firstPoint = Integer.parseInt(textFieldSearch.getText());
-                        if(! game.getGraph().hasVertex(firstPoint) ) {
-                            throw new UndirGraph.NoSuchVertexException("no vertex");
-                        }
-                    }
-                    catch (NumberFormatException | UndirGraph.NoSuchVertexException ex) {
-                        game.existError = true;
-                        return;
-                    }
-                    stage.unfocusAll();
-
-                    pointShape = new ShapeRenderer();
-                    onePointMode = true;
+                    stage.addActor(twoPointModeButton);
+                    onePointModeButton.remove();
+                    secondPointTextField.remove();
+                    firstPointTextField.setMessageText("Search in GZ");
                 }
             }
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 getWaiter();
-                searchButtonPressed = true;
+                onePointModeButtonPressed = true;
                 return true;
             }
         });
 
-        stage.addActor(searchButton);
+        twoPointModeButton.setSize(sizeWidth_bSearch, sizeHeight_bSearch);
+        twoPointModeButton.setPosition(100, 100);
+        twoPointModeButton.addListener(new InputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if (twoPointModeButtonPressed) {
+                    deleteWaiter();
+                    stage.addActor(secondPointTextField);
+                    stage.addActor(onePointModeButton);
+                    firstPointTextField.setMessageText("From");
+                }
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                getWaiter();
+                twoPointModeButtonPressed = true;
+                return true;
+            }
+        });
+        stage.addActor(twoPointModeButton);
     }
     //Новый метод для шрифтов!
-    public BitmapFont getFont (Color color, int size){
+    /*public BitmapFont getFont (Color color, int size){
         BitmapFont font;
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("skin/font.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -213,11 +227,12 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         font = generator.generateFont(parameter);
         generator.dispose(); // don't forget to dispose to avoid memory leaks!
         return font;
-    }
+    }*/
 
     public Skin getSkin (Color colorUp, Color colorDown, int sizeFont, Color colorFont){
         Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
-        BitmapFont myFont = getFont(colorFont, sizeFont);
+        //BitmapFont myFont = getFont(colorFont, sizeFont);
+        BitmapFont myFont = new BitmapFont();
 
 
         myFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
@@ -313,6 +328,24 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            Gdx.input.setOnscreenKeyboardVisible(false);
+            deleteWaiter();
+            try {
+                firstPoint = Integer.parseInt(firstPointTextField.getText());
+                if(! game.getGraph().hasVertex(firstPoint) ) {
+                    throw new UndirGraph.NoSuchVertexException("no vertex");
+                }
+            }
+            catch (NumberFormatException | UndirGraph.NoSuchVertexException ex) {
+                game.existError = true;
+                return;
+            }
+
+            onePointMode = true;
+            pointShape = new ShapeRenderer();
+        }
+
         batch.begin();
         sprite.draw(batch);
         batch.end();
@@ -354,6 +387,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
+
         return false;
     }
 
