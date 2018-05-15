@@ -1,7 +1,7 @@
 package com.app;
 
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
@@ -13,7 +13,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -50,7 +49,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
     private boolean searchButtonPressed, switchFlButtonPressed;
     private Dialog dialog;
     private OrthographicCamera camera = null;
-    private BitmapFont fontForMenu = getFont(Color.BLACK, 42);
+    //private BitmapFont fontForMenu = getFont(Color.BLACK, 42);
 
 
     MapScreen(final MyGame game) {
@@ -220,6 +219,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         BitmapFont myFont = getFont(colorFont, sizeFont);
 
+
         myFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         skin.add("default", myFont);//new BitmapFont());
 
@@ -250,6 +250,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
         pointShape.begin(ShapeRenderer.ShapeType.Filled);
         pointShape.setColor(Color.RED);
+        pointShape.setProjectionMatrix(camera.combined);
 
         pointShape.rectLine(game.getGraph().getVertex(firstPoint).getX(),
                 game.getGraph().getVertex(firstPoint).getY() + game.getHeightScreen() / 6,
@@ -315,11 +316,11 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         batch.begin();
         sprite.draw(batch);
         batch.end();
-        stage.act(delta);
 
         if(onePointMode)
             drawPoint();
 
+        stage.act(delta);
         stage.draw();
     }
 
