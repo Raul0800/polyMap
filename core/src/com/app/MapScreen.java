@@ -30,12 +30,13 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 public class MapScreen extends Stage implements Screen, GestureListener{
     private SpriteBatch batch;
     private Sprite sprite;
+    private float gX,gY;
     private int widthMapPict;//ширина картинки карты
     private int heightMapPict;//высота картинки карты
     private float positionMapW, positionMapH;//позиция по У картинки карты
     private int stateWidthScreen,stateHeightScreen;//позиция по Х картинки карты
     //все переменные,описанные выше, изменяются при масштабировании
-    private float statePositionW,statePositionH,stateWMap,stateHMap;// неизменная позиция и размеры картинки
+    //private float statePositionW,statePositionH,stateWMap,stateHMap;// неизменная позиция и размеры картинки
 
     private int firstPoint, secondPoint;
     ShapeRenderer pointShape;
@@ -53,6 +54,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
 
     MapScreen(final MyGame game) {
+        gX = gY = 0;
         this.game = game;
         stage = new Stage(new ScreenViewport());
         Color colButUp = new Color(0.7f, 0.5f, 1, 0.6f);
@@ -251,14 +253,19 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
         stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
         heightMapPict = heightMapPict / 2;
-        statePositionW = positionMapW = 0;
-        statePositionH = positionMapH = heightMapPict/3;
+        positionMapW = 0;
+        positionMapH = heightMapPict/3;
 
         map = new Texture(currImage);
         batch = new SpriteBatch();
         sprite = new Sprite(map);
         sprite.setSize(widthMapPict, heightMapPict);
         sprite.setPosition(positionMapW, positionMapH);
+        camera = new OrthographicCamera(stateWidthScreen, stateHeightScreen);
+        camera.position.set(camera.viewportWidth/2,camera.viewportHeight/2,0);
+
+        camera.update();
+
     }
 
     public void drawPoint() {
@@ -304,10 +311,6 @@ public class MapScreen extends Stage implements Screen, GestureListener{
     public void show() {
         setStartPositionMap ();
 
-        camera = new OrthographicCamera(stateWidthScreen, stateHeightScreen);
-        camera.position.set(camera.viewportWidth/2,camera.viewportHeight/2,0);
-
-        camera.update();
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         //Gdx.input.setInputProcessor(stage);///////////////!!!!!!!!!!!!!!!!!!!!!!!!
         inputMultiplexer.addProcessor(stage);
@@ -403,12 +406,13 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        //positionMapH = positionMapH - deltaY;
-        //positionMapW = positionMapW + deltaX;
-        //sprite.setPosition(positionMapW, positionMapH);
-        camera.translate(-deltaX ,deltaY );
-        camera.update();
-        return false;
+      if (camera.frustum.pointInFrustum(x-deltaX,y,0)){
+             camera.translate(-deltaX ,deltaY );
+             camera.update();
+
+         }
+        System.out.println("camera position Y: " + camera.position.y);
+        return true;
     }
 
     @Override
