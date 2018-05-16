@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -406,13 +407,16 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-      if (camera.frustum.pointInFrustum(x-deltaX,y,0)){
-             camera.translate(-deltaX ,deltaY );
+      if (camera.position.x - deltaX*camera.zoom >= 0 &&
+              camera.position.x - deltaX*camera.zoom<= stateWidthScreen
+              && camera.position.y+deltaY*camera.zoom >= positionMapH &&
+              camera.position.y + deltaY*camera.zoom <= positionMapH+heightMapPict
+              ){
+             camera.translate(-deltaX*camera.zoom ,deltaY*camera.zoom );
              camera.update();
-
-         }
-        System.out.println("camera position Y: " + camera.position.y);
-        return true;
+        System.out.println("camera.position.x: " + camera.position.x);
+      }
+      return true;
     }
 
     @Override
@@ -422,20 +426,18 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
     @Override
     public boolean zoom(float initialDistance, float distance) {
-        System.out.println("start camera.zoom "+camera.zoom);
-        camera.zoom = initialDistance/(distance)/camera.zoom;
-        System.out.println("initialDistance "+initialDistance);
-        System.out.println("distance " + distance);
-        System.out.println("initialDistance/distance " + initialDistance/distance);
-        System.out.println("camera.zoom " + camera.zoom);
-        //camera.zoom = (initialDistance/(distance))*camera.zoom;
-        camera.update();
-        return true;
+        return false;
     }
 
     @Override
     public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-        return false;
+        if (initialPointer1.dst(initialPointer2)/pointer1.dst(pointer2)*camera.zoom <=1){
+            camera.translate(camera.zoom*(-(pointer1.x+pointer2.x)/2+ (initialPointer1.x+initialPointer2.x)/2),
+                    camera.zoom*(-(pointer1.y+pointer2.y)/2+(initialPointer1.y+initialPointer2.y)/2));
+            camera.zoom = initialPointer1.dst(initialPointer2)/pointer1.dst(pointer2)*camera.zoom;
+            camera.update();
+        }
+        return true;
     }
 
     @Override
