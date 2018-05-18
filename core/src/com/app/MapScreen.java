@@ -407,15 +407,15 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-      if (camera.position.x - deltaX*camera.zoom >= 0 &&
-              camera.position.x - deltaX*camera.zoom<= stateWidthScreen
-              && camera.position.y+deltaY*camera.zoom >= positionMapH &&
-              camera.position.y + deltaY*camera.zoom <= positionMapH+heightMapPict
-              ){
+     // if (camera.position.x - deltaX*camera.zoom >= 0 &&
+      //        camera.position.x - deltaX*camera.zoom<= stateWidthScreen
+      //        && camera.position.y+deltaY*camera.zoom >= positionMapH &&
+      //        camera.position.y + deltaY*camera.zoom <= positionMapH+heightMapPict
+      //        ){
              camera.translate(-deltaX*camera.zoom ,deltaY*camera.zoom );
              camera.update();
-        System.out.println("camera.position.x: " + camera.position.x);
-      }
+       // System.out.println("camera.position.x: " + camera.position.x);
+      //}
       return true;
     }
 
@@ -431,11 +431,17 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
     @Override
     public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-        if (initialPointer1.dst(initialPointer2)/pointer1.dst(pointer2)*camera.zoom <=1){
-            camera.translate(camera.zoom*(-(pointer1.x+pointer2.x)/2+ (initialPointer1.x+initialPointer2.x)/2),
-                    camera.zoom*(-(pointer1.y+pointer2.y)/2+(initialPointer1.y+initialPointer2.y)/2));
-            camera.zoom = initialPointer1.dst(initialPointer2)/pointer1.dst(pointer2)*camera.zoom;
+        float initialDistance = initialPointer1.dst(initialPointer2);
+        float distance = pointer1.dst(pointer2);
+        if (initialDistance < distance && camera.zoom * 0.99f <= 1)
+            camera.zoom = camera.zoom * 0.99f;
+        if (initialDistance >  distance && camera.zoom / 0.99f <=1)
+            camera.zoom = camera.zoom / 0.99f;
+        if (camera.zoom <=1 && initialDistance != distance){
+            camera.translate((-(pointer1.x+pointer2.x)/2+ (initialPointer1.x+initialPointer2.x)/2) * 0.015f,
+                    ((pointer1.y+pointer2.y)/2-(initialPointer1.y+initialPointer2.y)/2) * 0.015f);
             camera.update();
+            //System.out.println("KEKEKKEKE" + (-(pointer1.y+pointer2.y)/2+(initialPointer1.y+initialPointer2.y)/2));
         }
         return true;
     }
