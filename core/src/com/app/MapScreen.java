@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
@@ -210,7 +211,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         stage.addActor(twoPointModeButton);
     }
     //Новый метод для шрифтов!
-    /*public BitmapFont getFont (Color color, int size){
+    public BitmapFont getFont (Color color, int size){
         BitmapFont font;
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("skin/font.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -230,12 +231,12 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         font = generator.generateFont(parameter);
         generator.dispose(); // don't forget to dispose to avoid memory leaks!
         return font;
-    }*/
+    }
 
     public Skin getSkin (Color colorUp, Color colorDown, int sizeFont, Color colorFont){
         Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
-        //BitmapFont myFont = getFont(colorFont, sizeFont);
-        BitmapFont myFont = new BitmapFont();
+        BitmapFont myFont = getFont(colorFont, sizeFont);
+        //BitmapFont myFont = new BitmapFont();
 
 
         myFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
