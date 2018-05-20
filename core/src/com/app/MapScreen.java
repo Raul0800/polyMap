@@ -11,20 +11,25 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.ArrayList;
@@ -55,6 +60,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
     private OrthographicCamera camera = null;
     //private BitmapFont fontForMenu = getFont(Color.BLACK, 42);
 
+    final SidePanel sidePanel;
 
     MapScreen(final MyGame game) {
         gX = gY = 0;
@@ -100,11 +106,11 @@ public class MapScreen extends Stage implements Screen, GestureListener{
                         dispose();
                         currImage = "GZ_0.png";
                         setStartPositionMap();
+                        onePointMode = false;
+                        twoPointMode = false;
                     }
                     switchFlButtonPressed = false;
                     deleteWaiter();
-                    onePointMode = false;
-                    twoPointMode = false;
                 }
             }
 
@@ -129,11 +135,11 @@ public class MapScreen extends Stage implements Screen, GestureListener{
                         dispose();
                         currImage = "GZ_1.png";
                         setStartPositionMap();
+                        onePointMode = false;
+                        twoPointMode = false;
                     }
                     switchFlButtonPressed = false;
                     deleteWaiter();
-                    onePointMode = false;
-                    twoPointMode = false;
                 }
             }
 
@@ -176,9 +182,9 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         float positionHeight_bSearch = game.getHeightScreen() * 0.91f,
                 positionWidth_bSearch = game.getWidthScreen() * 0.81f;
 
-        final TextButton onePointModeButton = new TextButton("1pMode", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
-        final TextButton twoPointModeButton = new TextButton("2pMode", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
-
+        //final TextButton onePointModeButton = new TextButton("1pMode", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
+        //final TextButton twoPointModeButton = new TextButton("2pMode", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
+        /*
         onePointModeButton.setSize(sizeWidth_bSearch, sizeHeight_bSearch);
         onePointModeButton.setPosition(100, 100);
         onePointModeButton.addListener(new InputListener() {
@@ -228,6 +234,106 @@ public class MapScreen extends Stage implements Screen, GestureListener{
             }
         });
         stage.addActor(twoPointModeButton);
+*/
+// load atlas file
+        TextureAtlas atlas = new TextureAtlas("data/menu_ui.atlas");
+        TextureAtlas buttons_new_atlas = new TextureAtlas("data/buttons_new.atlas");
+
+        // initialize all menu items from atlas region.
+        final Image image_search = new Image(buttons_new_atlas.findRegion("baseline_directions_black"));
+        final Image image_favorite = new Image(buttons_new_atlas.findRegion("baseline_favorite_black"));
+        final Image image_departments = new Image(buttons_new_atlas.findRegion("baseline_school_black"));
+        final Image image_background = new Image(getTintedDrawable(atlas.findRegion("image_background"), Color.WHITE));
+        final Image button_menu = new Image(atlas.findRegion("button_menu"));
+
+
+
+        sidePanel = new SidePanel(game.getWidthScreen()*3/4, game.getHeightScreen());
+        //sidePanel.setSize(game.getWidthScreen()*3/4, game.getHeightScreen());
+        //sidePanel.setFillParent(true);
+        sidePanel.addActor(image_search);
+        sidePanel.addActor(image_favorite);
+        sidePanel.addActor(image_departments);
+        //image_background.setFillParent(true);
+        sidePanel.addActor(image_background);
+
+        //sidePanel.setDebug(true);
+        //sidePanel.setColor(0.0f,1.0f,0.0f, 0.5f);
+        //sidePanel.setColor(Color.BLACK);
+        //sidePanel.setPosition(0.0f, game.getHeightScreen()-200);
+        //sidePanel.addActor(image_background);
+
+        stage.addActor(sidePanel);
+        /*
+        //sidePanel = new SidePanel(0, game.getHeightScreen());
+        //sidePanel.setSpeed(60f);
+        // add items into drawer panel.
+        sidePanel.add(image_search).height(150f).expandX().row();
+        sidePanel.add(image_favorite).height(150f).expandX().row();
+        sidePanel.add(image_departments).height(150f).expandX().row();
+        sidePanel.add().height(game.getHeightScreen()/2).row(); // empty
+
+        // setup attributes for menu navigation drawer.
+        sidePanel.setBackground(image_background.getDrawable());
+        sidePanel.bottom().left();
+        //sidePanel.setWidthStartDrag(60f);
+        //sidePanel.setWidthBackDrag(1F);
+        sidePanel.setTouchable(Touchable.enabled);
+        button_menu.setName("BUTTON_MENU");
+
+        //image_background.setFillParent(true);
+        stage.addActor(image_background);
+        sidePanel.setName("SIDEPANEL");
+        stage.addActor(sidePanel);
+
+
+
+        System.out.println(stage.getRoot().findActor("SIDEPANEL").getX());
+        System.out.println(stage.getRoot().findActor("SIDEPANEL").getY());
+        System.out.println(stage.getRoot().findActor("SIDEPANEL").getOriginX());
+        System.out.println(stage.getRoot().findActor("SIDEPANEL").getOriginY());
+        */
+        //sidePanel.showManually(true);
+        /*
+        button_menu.setPosition(positionWidth_fSearch, positionHeight_fSearch);
+        //button_menu.setOrigin(Align.center);
+        stage.addActor(button_menu);
+        sidePanel.setRotateMenuButton(button_menu, 90f);
+        ClickListener listener = new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                boolean closed = sidePanel.isCompletelyClosed();
+                Actor actor = event.getTarget();
+                if (actor.getName().equals("BUTTON_MENU") || actor.getName().equals("IMAGE_BACKGROUND")) {
+                    image_background.setTouchable(closed ? Touchable.enabled : Touchable.disabled);
+                    sidePanel.showManually(closed);
+
+                }
+            }
+        };
+        addListeners(listener, button_menu, image_background);
+        */
+
+        image_search.addListener(new InputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if (twoPointModeButtonPressed) {
+                    deleteWaiter();
+                    stage.addActor(secondPointTextField);
+                    //stage.addActor(onePointModeButton);
+                    firstPointTextField.setMessageText("From");
+                    onePointMode = false;
+                    twoPointMode = false;
+                }
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                getWaiter();
+                twoPointModeButtonPressed = true;
+                return true;
+            }
+        });
+
     }
     //Новый метод для шрифтов!
     public BitmapFont getFont (Color color, int size){
@@ -336,8 +442,8 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
         float sizeHeightWaiter = game.getHeightScreen() * 0.15f;
         float sizeWidthWaiter = game.getWidthScreen();
-        Color colorWaiter = new Color(0,0,0,0.5f);
-        Color colorFont = new Color (1,1,1,1);
+        Color colorWaiter = new Color(0, 0, 0, 0.5f);
+        Color colorFont = new Color(1, 1, 1, 1);
         int sizeFont = 35;
 
         TextButton waiter = new TextButton("Wait, please...",
@@ -355,11 +461,25 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         }
     }
 
+
+    public static void addListeners(EventListener listener, Actor... actors) {
+        for (Actor actor : actors)
+            actor.addListener(listener);
+    }
+
+    public static Drawable getTintedDrawable(TextureAtlas.AtlasRegion region, Color color) {
+        Sprite sprite = new Sprite(region);
+        sprite.setColor(color);
+        return new SpriteDrawable(sprite);
+    }
+
+    InputMultiplexer inputMultiplexer;
     public void show() {
         setStartPositionMap ();
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         //Gdx.input.setInputProcessor(stage);///////////////!!!!!!!!!!!!!!!!!!!!!!!!
+        //TODO
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(new GestureDetector(this));
         Gdx.input.setInputProcessor(inputMultiplexer);
@@ -372,16 +492,20 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
     @Override
     public void render(float delta) {
-
+        if(sidePanel.isOpen() || Gdx.input.getX() < 20.0f)
+            Gdx.input.setInputProcessor(sidePanel.gestureDetector);
+        if(sidePanel.isClosed() && Gdx.input.getX() >= 20.0f)
+            Gdx.input.setInputProcessor(inputMultiplexer);
         camera.update();
+
         batch.setProjectionMatrix(camera.combined);
         Gdx.gl.glClearColor(1, 1, 1, 1);
+        //Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             Gdx.input.setOnscreenKeyboardVisible(false);
             deleteWaiter();
-
             try {
                 firstPoint = Integer.parseInt(firstPointTextField.getText());
                 onePointMode = true;
@@ -418,6 +542,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
         batch.begin();
         sprite.draw(batch);
+
         batch.end();
 
         if(onePointMode)
