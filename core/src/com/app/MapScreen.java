@@ -35,14 +35,14 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import java.util.ArrayList;
 
 
-public class MapScreen extends Stage implements Screen, GestureListener{
+public class MapScreen extends Stage implements Screen, GestureListener {
     private SpriteBatch batch;
     private Sprite sprite;
-    private float gX,gY;
+    private float gX, gY;
     private int widthMapPict;//ширина картинки карты
     private int heightMapPict;//высота картинки карты
     private float positionMapW, positionMapH;//позиция по У картинки карты
-    private int stateWidthScreen,stateHeightScreen;//позиция по Х картинки карты
+    private int stateWidthScreen, stateHeightScreen;//позиция по Х картинки карты
     //все переменные,описанные выше, изменяются при масштабировании
     //private float statePositionW,statePositionH,stateWMap,stateHMap;// неизменная позиция и размеры картинки
 
@@ -67,9 +67,10 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         this.game = game;
         stage = new Stage(new ScreenViewport());
         Color colButUp = new Color(0.7f, 0.5f, 1, 0.6f);
-        Color colButDown = new Color(0.7f,0.3f, 0.7f, 0.3f);
+        Color colButDown = new Color(0.7f, 0.3f, 0.7f, 0.3f);
         int sizeFontBut = 25;
 
+        pointShape = new ShapeRenderer();
         // Error dialog
         dialog = new Dialog("", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
         dialog.setColor(Color.CLEAR);
@@ -90,11 +91,9 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         //nameOfSwitchFlButton.setName("nameOfSwitchFlButton");
         //stage.addActor(nameOfSwitchFlButton);
 
-        pointShape = new ShapeRenderer();
-
         //Массив кнопок отвечающих за выбор этажа. Создано в виде массива с возможностью дальнейшнего
         //расширения.
-        TextButton []switchFlButton = new TextButton[2];
+        TextButton[] switchFlButton = new TextButton[2];
         switchFlButton[0] = new TextButton("0", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
         switchFlButton[0].setSize(sizeWidth_bFloor, sizeHeight_bFloor);
         switchFlButton[0].setPosition(positionWidth_bFloor, positionHeight_bFloor - sizeHeight_bFloor);
@@ -106,8 +105,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
                         dispose();
                         currImage = "GZ_0.png";
                         setStartPositionMap();
-                        onePointMode = false;
-                        twoPointMode = false;
+                        onePointMode = twoPointMode = false;
                     }
                     switchFlButtonPressed = false;
                     deleteWaiter();
@@ -126,7 +124,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
         switchFlButton[1] = new TextButton("1", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
         switchFlButton[1].setSize(sizeWidth_bFloor, sizeHeight_bFloor);
-        switchFlButton[1].setPosition(positionWidth_bFloor, positionHeight_bFloor - 2*sizeHeight_bFloor);
+        switchFlButton[1].setPosition(positionWidth_bFloor, positionHeight_bFloor - 2 * sizeHeight_bFloor);
         switchFlButton[1].addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -135,8 +133,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
                         dispose();
                         currImage = "GZ_1.png";
                         setStartPositionMap();
-                        onePointMode = false;
-                        twoPointMode = false;
+                        onePointMode = twoPointMode = false;
                     }
                     switchFlButtonPressed = false;
                     deleteWaiter();
@@ -196,9 +193,6 @@ public class MapScreen extends Stage implements Screen, GestureListener{
                     onePointModeButton.remove();
                     secondPointTextField.remove();
                     firstPointTextField.setMessageText("Search in GZ");
-                    secondPointTextField.setText("");
-                    onePointMode = false;
-                    twoPointMode = false;
                 }
             }
 
@@ -220,9 +214,6 @@ public class MapScreen extends Stage implements Screen, GestureListener{
                     stage.addActor(secondPointTextField);
                     stage.addActor(onePointModeButton);
                     firstPointTextField.setMessageText("From");
-                    onePointMode = false;
-                    twoPointMode = false;
-
                 }
             }
 
@@ -246,8 +237,6 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         final Image image_background = new Image(getTintedDrawable(atlas.findRegion("image_background"), Color.WHITE));
         final Image button_menu = new Image(atlas.findRegion("button_menu"));
 
-
-
         sidePanel = new SidePanel(game.getWidthScreen()*3/4, game.getHeightScreen());
         //sidePanel.setSize(game.getWidthScreen()*3/4, game.getHeightScreen());
         //sidePanel.setFillParent(true);
@@ -256,6 +245,27 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         sidePanel.addActor(image_departments);
         //image_background.setFillParent(true);
         sidePanel.addActor(image_background);
+
+        image_search.addListener(new InputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if (twoPointModeButtonPressed) {
+                    deleteWaiter();
+                    stage.addActor(secondPointTextField);
+                    firstPointTextField.setMessageText("From");
+                    onePointMode = false;
+                    twoPointMode = false;
+
+                }
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                getWaiter();
+                twoPointModeButtonPressed = true;
+                return true;
+            }
+        });
 
         //sidePanel.setDebug(true);
         //sidePanel.setColor(0.0f,1.0f,0.0f, 0.5f);
@@ -313,30 +323,9 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         addListeners(listener, button_menu, image_background);
         */
 
-        image_search.addListener(new InputListener() {
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (twoPointModeButtonPressed) {
-                    deleteWaiter();
-                    stage.addActor(secondPointTextField);
-                    //stage.addActor(onePointModeButton);
-                    firstPointTextField.setMessageText("From");
-                    onePointMode = false;
-                    twoPointMode = false;
-                }
-            }
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                getWaiter();
-                twoPointModeButtonPressed = true;
-                return true;
-            }
-        });
-
     }
     //Новый метод для шрифтов!
-    public BitmapFont getFont (Color color, int size){
+    public BitmapFont getFont(Color color, int size) {
         BitmapFont font;
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("skin/font.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -351,14 +340,14 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
         {
             final float sizeHeight = 1280, sizeWidth = 720;
-            parameter.size = (int)(parameter.size * (Gdx.graphics.getWidth() / sizeWidth));
+            parameter.size = (int) (parameter.size * (Gdx.graphics.getWidth() / sizeWidth));
         }
         font = generator.generateFont(parameter);
         generator.dispose(); // don't forget to dispose to avoid memory leaks!
         return font;
     }
 
-    public Skin getSkin (Color colorUp, Color colorDown, int sizeFont, Color colorFont){
+    public Skin getSkin(Color colorUp, Color colorDown, int sizeFont, Color colorFont) {
         Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         BitmapFont myFont = getFont(colorFont, sizeFont);
         //BitmapFont myFont = new BitmapFont();
@@ -376,12 +365,12 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         return skin;
     }
 
-    public void setStartPositionMap (){
+    public void setStartPositionMap() {
         stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
         stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
         heightMapPict = heightMapPict / 2;
         positionMapW = 0;
-        positionMapH = heightMapPict/3;
+        positionMapH = heightMapPict / 3;
 
         map = new Texture(currImage);
         batch = new SpriteBatch();
@@ -389,7 +378,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         sprite.setSize(widthMapPict, heightMapPict);
         sprite.setPosition(positionMapW, positionMapH);
         camera = new OrthographicCamera(stateWidthScreen, stateHeightScreen);
-        camera.position.set(camera.viewportWidth/2,camera.viewportHeight/2,0);
+        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
 
         camera.update();
 
@@ -435,8 +424,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         pointShape.end();
     }
 
-
-    public void getWaiter(){
+    public void getWaiter() {
         float positionHeightWaiter = game.getHeightScreen() * 0.4f;
         float positionWidthWaiter = 0;
 
@@ -454,8 +442,8 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         stage.addActor(waiter);
     }
 
-    public void deleteWaiter(){
-        for(Actor actor : stage.getActors()) {
+    public void deleteWaiter() {
+        for (Actor actor : stage.getActors()) {
             if (actor.getName() == "waiter")
                 actor.addAction(Actions.removeActor());
         }
@@ -475,17 +463,21 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
     InputMultiplexer inputMultiplexer;
     public void show() {
-        setStartPositionMap ();
+        setStartPositionMap();
 
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer = new InputMultiplexer();
         //Gdx.input.setInputProcessor(stage);///////////////!!!!!!!!!!!!!!!!!!!!!!!!
         //TODO
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(new GestureDetector(this));
-        Gdx.input.setInputProcessor(inputMultiplexer);
+        if(sidePanel.isOpen())
+            Gdx.input.setInputProcessor(sidePanel.gestureDetector);
+        if(sidePanel.isClosed())
+            Gdx.input.setInputProcessor(inputMultiplexer);
         //Gdx.input.setInputProcessor(stage);
 
-        if(game.existError) {
+
+        if (game.existError) {
             dialog.show(stage);
         }
     }
@@ -497,13 +489,14 @@ public class MapScreen extends Stage implements Screen, GestureListener{
         if(sidePanel.isClosed() && Gdx.input.getX() >= 20.0f)
             Gdx.input.setInputProcessor(inputMultiplexer);
         camera.update();
-
         batch.setProjectionMatrix(camera.combined);
         Gdx.gl.glClearColor(1, 1, 1, 1);
         //Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            Gdx.input.setOnscreenKeyboardVisible(false);
+            deleteWaiter();
             Gdx.input.setOnscreenKeyboardVisible(false);
             deleteWaiter();
             try {
@@ -537,7 +530,6 @@ public class MapScreen extends Stage implements Screen, GestureListener{
                 game.existError = true;
                 return;
             }
-
         }
 
         batch.begin();
@@ -545,7 +537,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
         batch.end();
 
-        if(onePointMode)
+        if (onePointMode)
             drawPoint();
         if(twoPointMode)
             drawPath();
@@ -556,7 +548,7 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
     @Override
     public void resize(int width, int height) {
-        camera.position.set(camera.viewportWidth/2,camera.viewportHeight/2,0);
+        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
     }
 
     @Override
@@ -600,17 +592,16 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-      if (camera.position.x - deltaX*camera.zoom >= 0 &&
-              camera.position.x - deltaX*camera.zoom<= stateWidthScreen
-              && camera.position.y+deltaY*camera.zoom >= positionMapH &&
-              camera.position.y + deltaY*camera.zoom <= positionMapH+heightMapPict
-              ){
-                    camera.translate(-deltaX*camera.zoom ,deltaY*camera.zoom );
-             camera.update();
-
-      //  System.out.println("camera.position.x: " + camera.position.x);
-      }
-      return true;
+        // if (camera.position.x - deltaX*camera.zoom >= 0 &&
+        //        camera.position.x - deltaX*camera.zoom<= stateWidthScreen
+        //        && camera.position.y+deltaY*camera.zoom >= positionMapH &&
+        //        camera.position.y + deltaY*camera.zoom <= positionMapH+heightMapPict
+        //        ){
+        camera.translate(-deltaX*camera.zoom ,deltaY*camera.zoom );
+        camera.update();
+        // System.out.println("camera.position.x: " + camera.position.x);
+        //}
+        return true;
     }
 
     @Override
@@ -625,15 +616,15 @@ public class MapScreen extends Stage implements Screen, GestureListener{
 
     @Override
     public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-        float initialDistance = initialPointer1.dst(initialPointer2);
-        float distance = pointer1.dst(pointer2);
-        if (initialDistance < distance && camera.zoom * 0.99f <= 1)
-            camera.zoom = camera.zoom * 0.99f;
+        float initialDistance =initialPointer1.dst(initialPointer2);
+        float distance =pointer1.dst(pointer2);
+        if (initialDistance < distance &&camera.zoom * 0.99f<=1)
+            camera.zoom =camera.zoom*0.99f;
         if (initialDistance >  distance && camera.zoom / 0.99f <=1)
             camera.zoom = camera.zoom / 0.99f;
         if (camera.zoom <=1 && initialDistance != distance){
-            camera.translate((-(pointer1.x+pointer2.x)/2+ (initialPointer1.x+initialPointer2.x)/2) * 0.015f,
-                    ((pointer1.y+pointer2.y)/2-(initialPointer1.y+initialPointer2.y)/2) * 0.015f);
+            camera.translate((-(pointer1.x+pointer2.x)/2+ (initialPointer1.x+initialPointer2.x)/2)* 0.015f,
+                    ((pointer1.y+pointer2.y)/2-(initialPointer1.y+initialPointer2.y)/2)* 0.015f);
             camera.update();
             //System.out.println("KEKEKKEKE" + (-(pointer1.y+pointer2.y)/2+(initialPointer1.y+initialPointer2.y)/2));
         }
