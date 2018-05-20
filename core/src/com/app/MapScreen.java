@@ -592,15 +592,15 @@ public class MapScreen extends Stage implements Screen, GestureListener {
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        // if (camera.position.x - deltaX*camera.zoom >= 0 &&
-        //        camera.position.x - deltaX*camera.zoom<= stateWidthScreen
-        //        && camera.position.y+deltaY*camera.zoom >= positionMapH &&
-        //        camera.position.y + deltaY*camera.zoom <= positionMapH+heightMapPict
-        //        ){
+         if (camera.position.x - deltaX*camera.zoom >= 0 &&
+                camera.position.x - deltaX*camera.zoom<= stateWidthScreen
+                && camera.position.y+deltaY*camera.zoom >= positionMapH &&
+                camera.position.y + deltaY*camera.zoom <= positionMapH+heightMapPict
+                ){
         camera.translate(-deltaX*camera.zoom ,deltaY*camera.zoom );
         camera.update();
         // System.out.println("camera.position.x: " + camera.position.x);
-        //}
+        }
         return true;
     }
 
