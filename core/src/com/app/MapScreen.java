@@ -22,14 +22,17 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.ArrayList;
@@ -152,10 +155,10 @@ public class MapScreen extends Stage implements Screen, GestureListener {
 
         //Text Field for point
         float sizeHeight_fSearch = game.getHeightScreen() * 0.07f,
-                sizeWidth_fSearch = game.getWidthScreen() * 0.98f;
+                sizeWidth_fSearch = game.getWidthScreen() * 0.82f;//-0.16
 
         float positionHeight_fSearch = game.getHeightScreen() * 0.91f,
-                positionWidth_fSearch = game.getWidthScreen() * 0.01f;
+                positionWidth_fSearch = game.getWidthScreen() * 0.15f;
 
         firstPointTextField = new TextField("", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
         firstPointTextField.setSize(sizeWidth_fSearch, sizeHeight_fSearch);
@@ -179,149 +182,89 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         float positionHeight_bSearch = game.getHeightScreen() * 0.91f,
                 positionWidth_bSearch = game.getWidthScreen() * 0.81f;
 
-        //final TextButton onePointModeButton = new TextButton("1pMode", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
-        //final TextButton twoPointModeButton = new TextButton("2pMode", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
-        /*
-        onePointModeButton.setSize(sizeWidth_bSearch, sizeHeight_bSearch);
-        onePointModeButton.setPosition(100, 100);
-        onePointModeButton.addListener(new InputListener() {
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (onePointModeButtonPressed) {
-                    deleteWaiter();
-                    stage.addActor(twoPointModeButton);
-                    onePointModeButton.remove();
-                    secondPointTextField.remove();
-                    firstPointTextField.setMessageText("Search in GZ");
-                }
-            }
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                getWaiter();
-                onePointModeButtonPressed = true;
-                return true;
-            }
-        });
-
-        twoPointModeButton.setSize(sizeWidth_bSearch, sizeHeight_bSearch);
-        twoPointModeButton.setPosition(100, 100);
-        twoPointModeButton.addListener(new InputListener() {
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (twoPointModeButtonPressed) {
-                    deleteWaiter();
-                    stage.addActor(secondPointTextField);
-                    stage.addActor(onePointModeButton);
-                    firstPointTextField.setMessageText("From");
-                }
-            }
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                getWaiter();
-                twoPointModeButtonPressed = true;
-                return true;
-            }
-        });
-        stage.addActor(twoPointModeButton);
-*/
-// load atlas file
+        // load atlas file
         TextureAtlas atlas = new TextureAtlas("data/menu_ui.atlas");
         TextureAtlas buttons_new_atlas = new TextureAtlas("data/buttons_new.atlas");
-
+        TextureAtlas logo_atlas = new TextureAtlas("data/logo.atlas");
         // initialize all menu items from atlas region.
+        final Image image_map = new Image(buttons_new_atlas.findRegion("baseline_map_black"));
         final Image image_search = new Image(buttons_new_atlas.findRegion("baseline_directions_black"));
         final Image image_favorite = new Image(buttons_new_atlas.findRegion("baseline_favorite_black"));
         final Image image_departments = new Image(buttons_new_atlas.findRegion("baseline_school_black"));
         final Image image_background = new Image(getTintedDrawable(atlas.findRegion("image_background"), Color.WHITE));
         final Image button_menu = new Image(atlas.findRegion("button_menu"));
 
-        sidePanel = new SidePanel(game.getWidthScreen()*3/4, game.getHeightScreen());
-        //sidePanel.setSize(game.getWidthScreen()*3/4, game.getHeightScreen());
-        //sidePanel.setFillParent(true);
-        sidePanel.addActor(image_search);
-        sidePanel.addActor(image_favorite);
-        sidePanel.addActor(image_departments);
-        //image_background.setFillParent(true);
-        sidePanel.addActor(image_background);
+        final Image image_logo = new Image(logo_atlas.findRegion("logo"));
 
-        image_search.addListener(new InputListener() {
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (twoPointModeButtonPressed) {
-                    deleteWaiter();
-                    stage.addActor(secondPointTextField);
-                    firstPointTextField.setMessageText("From");
-                    onePointMode = false;
-                    twoPointMode = false;
+        float NAV_HEIGHT = game.getHeightScreen();
+        float NAV_WIDTH = game.getWidthScreen()*3/4;
+        sidePanel = new SidePanel(NAV_WIDTH, NAV_HEIGHT);
 
-                }
-            }
+        sidePanel.add(image_logo).size(300, 300).expandX().row();
+        sidePanel.add(image_map).size(480,150 ).expandX().row();
+        sidePanel.add(image_search).size(480,150 ).expandX().row();
+        sidePanel.add(image_favorite).size(480,150 ).expandX().row();
+        sidePanel.add(image_departments).size(480,150 ).expandX().row();
+        sidePanel.add().height(getHeight()/4);
 
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                getWaiter();
-                twoPointModeButtonPressed = true;
-                return true;
-            }
-        });
-
-        //sidePanel.setDebug(true);
-        //sidePanel.setColor(0.0f,1.0f,0.0f, 0.5f);
-        //sidePanel.setColor(Color.BLACK);
-        //sidePanel.setPosition(0.0f, game.getHeightScreen()-200);
-        //sidePanel.addActor(image_background);
-
-        stage.addActor(sidePanel);
-        /*
-        //sidePanel = new SidePanel(0, game.getHeightScreen());
-        //sidePanel.setSpeed(60f);
-        // add items into drawer panel.
-        sidePanel.add(image_search).height(150f).expandX().row();
-        sidePanel.add(image_favorite).height(150f).expandX().row();
-        sidePanel.add(image_departments).height(150f).expandX().row();
-        sidePanel.add().height(game.getHeightScreen()/2).row(); // empty
-
-        // setup attributes for menu navigation drawer.
+        sidePanel.add(image_background);
         sidePanel.setBackground(image_background.getDrawable());
         sidePanel.bottom().left();
-        //sidePanel.setWidthStartDrag(60f);
-        //sidePanel.setWidthBackDrag(1F);
-        sidePanel.setTouchable(Touchable.enabled);
-        button_menu.setName("BUTTON_MENU");
+        sidePanel.setWidthStartDrag(40f);
+        sidePanel.setWidthBackDrag(0F);
 
-        //image_background.setFillParent(true);
+
+        sidePanel.setRotateMenuButton(button_menu, 90f);
+
+        /* z-index = 1 */
+        // add image_background as a separating actor into stage to make smooth shadow with dragging value.
+        /*
+        image_background.setFillParent(true);
         stage.addActor(image_background);
-        sidePanel.setName("SIDEPANEL");
+        sidePanel.setFadeBackground(image_background, 0.5f);
+        */
+        /* z-index = 2 */
         stage.addActor(sidePanel);
 
-
-
-        System.out.println(stage.getRoot().findActor("SIDEPANEL").getX());
-        System.out.println(stage.getRoot().findActor("SIDEPANEL").getY());
-        System.out.println(stage.getRoot().findActor("SIDEPANEL").getOriginX());
-        System.out.println(stage.getRoot().findActor("SIDEPANEL").getOriginY());
-        */
-        //sidePanel.showManually(true);
-        /*
-        button_menu.setPosition(positionWidth_fSearch, positionHeight_fSearch);
-        //button_menu.setOrigin(Align.center);
+        /* z-index = 3 */
+        // add button_menu as a separating actor into stage to rotates with dragging value.
+        button_menu.setOrigin(Align.center);
         stage.addActor(button_menu);
-        sidePanel.setRotateMenuButton(button_menu, 90f);
+
+
+        //Clicker
+        float positionHeight_bMenu = game.getHeightScreen() * 0.87f,
+                positionWidth_bMenu = game.getWidthScreen() * (-0.07f);
+        button_menu.setPosition(positionWidth_bMenu, positionHeight_bMenu);
+        button_menu.setName("BUTTON_MENU");
+        image_search.setName("SEARCH");
+        image_background.setName("IMAGE_BACKGROUND");
+
+        Image image_shadow = new Image(atlas.findRegion("image_shadow"));
+        image_shadow.setHeight(NAV_HEIGHT);
+        image_shadow.setX(NAV_WIDTH);
+        sidePanel.setAreaWidth(NAV_WIDTH + image_shadow.getWidth());
+        sidePanel.addActor(image_shadow);
+
+        // show the panel
+        sidePanel.showManually(true);
         ClickListener listener = new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 boolean closed = sidePanel.isCompletelyClosed();
                 Actor actor = event.getTarget();
-                if (actor.getName().equals("BUTTON_MENU") || actor.getName().equals("IMAGE_BACKGROUND")) {
+                if (actor.getName().equals("SEARCH")) {
+                    System.out.println("search");
+
+                }else if (actor.getName().equals("BUTTON_MENU") || actor.getName().equals("IMAGE_BACKGROUND")) {
                     image_background.setTouchable(closed ? Touchable.enabled : Touchable.disabled);
                     sidePanel.showManually(closed);
 
                 }
             }
         };
-        addListeners(listener, button_menu, image_background);
-        */
+        addListeners(listener, image_search, button_menu);
+
+        stage.addActor(sidePanel);
 
     }
     //Новый метод для шрифтов!
@@ -475,13 +418,14 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         setStartPositionMap();
 
         inputMultiplexer = new InputMultiplexer();
+
         //Gdx.input.setInputProcessor(stage);///////////////!!!!!!!!!!!!!!!!!!!!!!!!
         //TODO
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(new GestureDetector(this));
-        if(sidePanel.isOpen())
-            Gdx.input.setInputProcessor(sidePanel.gestureDetector);
-        if(sidePanel.isClosed())
+        //if(sidePanel.isOpen())
+        //    Gdx.input.setInputProcessor(sidePanel.gestureDetector);
+        //if(sidePanel.isClosed())
             Gdx.input.setInputProcessor(inputMultiplexer);
         //Gdx.input.setInputProcessor(stage);
 
@@ -493,12 +437,14 @@ public class MapScreen extends Stage implements Screen, GestureListener {
 
     @Override
     public void render(float delta) {
-        if(sidePanel.isOpen() || Gdx.input.getX() < 20.0f)
-            Gdx.input.setInputProcessor(sidePanel.gestureDetector);
-        if(sidePanel.isClosed() && Gdx.input.getX() >= 20.0f)
-            Gdx.input.setInputProcessor(inputMultiplexer);
-        camera.update();
-        batch.setProjectionMatrix(camera.combined);
+        //if(sidePanel.isOpen() || Gdx.input.getX() < 20.0f)
+        //    Gdx.input.setInputProcessor(sidePanel.gestureDetector);
+        //if(sidePanel.isClosed() && Gdx.input.getX() >= 20.0f)
+        //    Gdx.input.setInputProcessor(inputMultiplexer);
+        if(sidePanel.isCompletelyClosed()) {
+            camera.update();
+            batch.setProjectionMatrix(camera.combined);
+        }
         Gdx.gl.glClearColor(1, 1, 1, 1);
         //Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -608,8 +554,10 @@ public class MapScreen extends Stage implements Screen, GestureListener {
                 && camera.position.y+deltaY*camera.zoom >= positionMapH &&
                 camera.position.y + deltaY*camera.zoom <= positionMapH+heightMapPict
                 ){
-        camera.translate(-deltaX*camera.zoom ,deltaY*camera.zoom );
-        camera.update();
+             if(sidePanel.isCompletelyClosed()) {
+                 camera.translate(-deltaX * camera.zoom, deltaY * camera.zoom);
+                 camera.update();
+             }
         // System.out.println("camera.position.x: " + camera.position.x);
         }
         return true;
