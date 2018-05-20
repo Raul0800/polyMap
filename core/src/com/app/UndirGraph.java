@@ -3,7 +3,12 @@
 
 package com.app;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+
 import static java.lang.Math.min;
 
 public class UndirGraph implements Graph{
@@ -20,7 +25,7 @@ public class UndirGraph implements Graph{
      * Construct a graph from a Scanner.
      * @param string The scanner.
      */
-    UndirGraph(String string){
+    UndirGraph(String string, int screenWidth, int screenHeight){
         String typeOfRoom = null;
         this.graphMap = new HashMap<>();
         StringTokenizer strToken = new StringTokenizer(string,"\n");
@@ -41,7 +46,7 @@ public class UndirGraph implements Graph{
 
             //arr[0] is the number of the vertex, arr[1] and arr[2] is coordinates
             graphMap.put(arr[0], new Vertex());
-            graphMap.get(arr[0]).setCoordinate(arr[1] * 722 / 6531, arr[2] * 642 / 4082);
+            graphMap.get(arr[0]).setCoordinate(arr[1] * screenWidth / 6531, arr[2] * (screenHeight / 2) / 4082);
             graphMap.get(arr[0]).setNumber(arr[0]);
             graphMap.get(arr[0]).setTypeOfRoom(typeOfRoom);
             for(int i = 3; i < count - 2; i += 2) {

@@ -10,9 +10,9 @@ public class Main {
         UndirGraph graph;
         FileHandle handle;
         handle = Gdx.files.internal("graph.csv");
-        graph = new UndirGraph(handle.readString());
+        //graph = new UndirGraph(handle.readString(), Gdx.app.getGraphics().getWidth(), Gdx.app.getGraphics().getHeight());
 
-        System.out.println(graph.searchPath(107,138));
+        //System.out.println(graph.searchPath(107,138));
     }
 
 

@@ -77,8 +77,7 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         // Error dialog
         dialog = new Dialog("", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
         dialog.setColor(Color.CLEAR);
-        dialog.text("   Аудитория не найдена!   ");
-        dialog.button("   OK   ", true); //sends "true" as the result
+        dialog.button("\n Аудитория не найдена!\n\n    OK   \n", true); //sends "true" as the result
 
         //Обозначение для ниже стоящих кнопок.
 
@@ -239,6 +238,7 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         button_menu.setName("BUTTON_MENU");
         image_search.setName("SEARCH");
         image_background.setName("IMAGE_BACKGROUND");
+        image_map.setName("MAP");
 
         Image image_shadow = new Image(atlas.findRegion("image_shadow"));
         image_shadow.setHeight(NAV_HEIGHT);
@@ -253,20 +253,31 @@ public class MapScreen extends Stage implements Screen, GestureListener {
                 boolean closed = sidePanel.isCompletelyClosed();
                 Actor actor = event.getTarget();
                 if (actor.getName().equals("SEARCH")) {
-                    System.out.println("search");
+                    sidePanel.showManually(closed);
+                    stage.addActor(secondPointTextField);
+                    sidePanel.remove();
+                    stage.addActor(sidePanel);
+                    firstPointTextField.setMessageText("From");
+                    onePointMode = twoPointMode = false;
 
-                }else if (actor.getName().equals("BUTTON_MENU") || actor.getName().equals("IMAGE_BACKGROUND")) {
+                }else if(actor.getName().equals("MAP")) {
+                    sidePanel.showManually(closed);
+                    secondPointTextField.remove();
+                    firstPointTextField.setMessageText("Search in GZ");
+                    secondPointTextField.setText("");
+                    onePointMode = twoPointMode = false;
+
+                } else if (actor.getName().equals("BUTTON_MENU") || actor.getName().equals("IMAGE_BACKGROUND")) {
                     image_background.setTouchable(closed ? Touchable.enabled : Touchable.disabled);
                     sidePanel.showManually(closed);
-
                 }
             }
         };
-        addListeners(listener, image_search, button_menu);
+        addListeners(listener, image_search, button_menu, image_map);
 
         stage.addActor(sidePanel);
-
     }
+
     //Новый метод для шрифтов!
     public BitmapFont getFont(Color color, int size) {
         BitmapFont font;
@@ -429,10 +440,6 @@ public class MapScreen extends Stage implements Screen, GestureListener {
             Gdx.input.setInputProcessor(inputMultiplexer);
         //Gdx.input.setInputProcessor(stage);
 
-
-        if (game.existError) {
-            dialog.show(stage);
-        }
     }
 
     @Override
@@ -450,16 +457,12 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            //getWaiter();
             setPositionMap();
-            Gdx.input.setOnscreenKeyboardVisible(false);
-            deleteWaiter();
             Gdx.input.setOnscreenKeyboardVisible(false);
             deleteWaiter();
             try {
                 firstPoint = Integer.parseInt(firstPointTextField.getText());
                 onePointMode = true;
-                System.out.println(firstPoint);
 
                 if(firstPoint < 0)
                     throw new NumberFormatException("");
@@ -468,14 +471,13 @@ public class MapScreen extends Stage implements Screen, GestureListener {
                 }
             } catch (NumberFormatException | UndirGraph.NoSuchVertexException ex) {
                 onePointMode = false;
-                game.existError = true;
+                dialog.show(stage);
                 return;
             }
 
             try {
-                twoPointMode = true;
                 secondPoint = Integer.parseInt(secondPointTextField.getText());
-                System.out.println(secondPoint);
+                twoPointMode = true;
 
                 if(secondPoint < 0)
                     throw new NumberFormatException("");
@@ -483,8 +485,10 @@ public class MapScreen extends Stage implements Screen, GestureListener {
                     throw new UndirGraph.NoSuchVertexException("no vertex");
                 }
             } catch (NumberFormatException | UndirGraph.NoSuchVertexException ex) {
+                if(stage.getActors().contains(secondPointTextField, true) ) {
+                    dialog.show(stage);
+                }
                 twoPointMode = false;
-                game.existError = true;
                 return;
             }
         }
@@ -493,6 +497,11 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         sprite.draw(batch);
 
         batch.end();
+
+        if ((onePointMode || twoPointMode) && currImage.equals("GZ_0.png")) {
+            currImage = "GZ_1.png";
+            setStartPositionMap();
+        }
 
         if (onePointMode)
             drawPoint();

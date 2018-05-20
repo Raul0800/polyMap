@@ -12,21 +12,19 @@ public class MyGame extends Game {
     private int widthScreen, heightScreen;
 
     private UndirGraph graph;
-    boolean existError;
 
     @Override
     public void create() {
 
         widthScreen = Gdx.app.getGraphics().getWidth();
         heightScreen = Gdx.app.getGraphics().getHeight();
-        existError = false;
 
         this.secondScreen = new SecondScreen(this);
         this.mapScreen = new MapScreen(this);
         setScreen(mapScreen);
 
         FileHandle handle = Gdx.files.internal("graph.csv");
-        graph = new UndirGraph(handle.readString());
+        graph = new UndirGraph(handle.readString(), widthScreen, heightScreen);
     }
 
     int getWidthScreen() { return  widthScreen; }
