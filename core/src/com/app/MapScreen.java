@@ -384,6 +384,15 @@ public class MapScreen extends Stage implements Screen, GestureListener {
 
     }
 
+    public void setPositionMap() {
+        camera = new OrthographicCamera(stateWidthScreen, stateHeightScreen);
+        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+
+        camera.update();
+
+    }
+
+
     public void drawPoint() {
 
         pointShape.begin(ShapeRenderer.ShapeType.Filled);
@@ -495,6 +504,8 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            //getWaiter();
+            setPositionMap();
             Gdx.input.setOnscreenKeyboardVisible(false);
             deleteWaiter();
             Gdx.input.setOnscreenKeyboardVisible(false);
