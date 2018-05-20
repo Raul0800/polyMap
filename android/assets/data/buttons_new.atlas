@@ -1,0 +1,33 @@
+
+buttons_new.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+baseline_directions_black
+  rotate: false
+  xy: 1, 305
+  size: 480, 150
+  orig: 480, 150
+  offset: 0, 0
+  index: 48
+baseline_favorite_black
+  rotate: false
+  xy: 1, 153
+  size: 480, 150
+  orig: 480, 150
+  offset: 0, 0
+  index: 48
+baseline_map_black
+  rotate: false
+  xy: 483, 305
+  size: 480, 150
+  orig: 480, 150
+  offset: 0, 0
+  index: 48
+baseline_school_black
+  rotate: false
+  xy: 1, 1
+  size: 480, 150
+  orig: 480, 150
+  offset: 0, 0
+  index: 48
