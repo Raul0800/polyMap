@@ -1,33 +1,39 @@
 package com.app;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.files.FileHandle;
 
-public class MyGame extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
-	
-	@Override
-	public void create () {
-		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
-	}
+public class MyGame extends Game {
 
-	@Override
-	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		batch.end();
-	}
-	
-	@Override
-	public void dispose () {
-		batch.dispose();
-		img.dispose();
-	}
+    SecondScreen secondScreen;
+    MapScreen mapScreen;
+
+    private int widthScreen, heightScreen;
+
+    private UndirGraph graph;
+
+    @Override
+    public void create() {
+
+        widthScreen = Gdx.app.getGraphics().getWidth();
+        heightScreen = Gdx.app.getGraphics().getHeight();
+
+        this.secondScreen = new SecondScreen(this);
+        this.mapScreen = new MapScreen(this);
+        setScreen(mapScreen);
+
+        FileHandle handle = Gdx.files.internal("graph.csv");
+        graph = new UndirGraph(handle.readString(), widthScreen, heightScreen);
+    }
+
+    int getWidthScreen() { return  widthScreen; }
+    int getHeightScreen() { return heightScreen; }
+
+    UndirGraph getGraph() {return graph; }
+
+    @Override
+    public void render() {
+        screen.render(1);
+    }
 }
