@@ -169,7 +169,7 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         secondPointTextField = new TextField("", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
         secondPointTextField.setSize(sizeWidth_fSearch, sizeHeight_fSearch);
         secondPointTextField.setMessageText("To");
-        secondPointTextField.setPosition(positionWidth_fSearch, positionHeight_fSearch - 100);
+        secondPointTextField.setPosition(positionWidth_fSearch, positionHeight_fSearch - sizeHeight_fSearch);
         secondPointTextField.setName("secondPointTextField");
 
 
@@ -200,10 +200,10 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         sidePanel = new SidePanel(NAV_WIDTH, NAV_HEIGHT);
 
         sidePanel.add(image_logo).size(300, 300).expandX().row();
-        sidePanel.add(image_map).size(480,150 ).expandX().row();
-        sidePanel.add(image_search).size(480,150 ).expandX().row();
-        sidePanel.add(image_favorite).size(480,150 ).expandX().row();
-        sidePanel.add(image_departments).size(480,150 ).expandX().row();
+        sidePanel.add(image_map).size(NAV_WIDTH,150 ).expandX().row();
+        sidePanel.add(image_search).size(NAV_WIDTH,150 ).expandX().row();
+        sidePanel.add(image_favorite).size(NAV_WIDTH,150 ).expandX().row();
+        sidePanel.add(image_departments).size(NAV_WIDTH,150 ).expandX().row();
         sidePanel.add().height(getHeight()/4);
 
         sidePanel.add(image_background);
