@@ -205,7 +205,7 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         sidePanel.add(image_logo).size(300, 300).expandX().row();
         sidePanel.add(image_map).size(480, 150).expandX().row();
         sidePanel.add(image_search).size(480, 150).expandX().row();
-        sidePanel.add(image_help).size(150, 150).expandX().row();
+        sidePanel.add(image_help).size(480, 150).expandX().row();
         //sidePanel.add(image_favorite).size(480, 150).expandX().row();
         //sidePanel.add(image_departments).size(480, 150).expandX().row();
         sidePanel.add().height(getHeight() / 4);
