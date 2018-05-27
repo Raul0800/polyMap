@@ -4,57 +4,68 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
- * @author aneesh
+ * Class for vertex of graph
  */
 class Vertex {
 
     /**
-     * Coordinate of vertex.
+     * @value coordinate of vertex
      */
-    private int x,y;
+    private int x, y;
 
     /**
-     *  Number of vertex.
+     * @value number of vertex
      */
     private int number;
 
     /**
-     * Used for search algorithms.
+     * @value Used for search algorithms.
      */
     private boolean visited;
 
     /**
-     * List of vertices adjacent to this vertex.
+     * @value List of vertices adjacent to this vertex.
      */
     private Map<Integer, Integer> neighbours;
 
     /**
-     * identifier of room
+     * @value identifier of room
      */
     private String typeOfRoom;
 
     /**
      * No parameter constructor.
      */
-    Vertex(){
+    Vertex() {
         this.visited = false;
         this.neighbours = new HashMap<>();
     }
 
-    void setNumber(int number) { this.number = number; }
-    void setTypeOfRoom(String typeOfRoom) { this.typeOfRoom = typeOfRoom; }
+    /**
+     * Set a number of vertex
+     *
+     * @param number of Vertex
+     */
+    void setNumber(int number) {
+        this.number = number;
+    }
+
+    void setTypeOfRoom(String typeOfRoom) {
+        this.typeOfRoom = typeOfRoom;
+    }
 
     /**
      * Check to see if the vertex is marked as visited.
+     *
      * @return true/false
      */
-    boolean isVisited(){
+    boolean isVisited() {
         return visited;
     }
 
     /**
      * Return distance from this vertex to neighbour
+     *
      * @param v - number of neighbour
      * @return - distance to v
      */
@@ -64,6 +75,7 @@ class Vertex {
 
     /**
      * Set coordinate of vertex
+     *
      * @param x - coordinate x
      * @param y - coordinate y
      */
@@ -74,42 +86,64 @@ class Vertex {
 
     /**
      * Returns coordinate of vertex
+     *
      * @return x or y coordinate of vertex
      */
-    public int getX() { return this.x; }
-    public int getY() { return this.y; }
-    public String getTypeOfRoom() { return this.typeOfRoom; }
+    public int getX() {
+        return this.x;
+    }
+
+    public int getY() {
+        return this.y;
+    }
+
+    public String getTypeOfRoom() {
+        return this.typeOfRoom;
+    }
 
     /**
      * Checks if 'v' is a neighbor of this vertex.
+     *
      * @param v The vertex in question.
      * @return true/false
      */
-    boolean isNeighbour(int v){
+    boolean isNeighbour(int v) {
         return this.neighbours.containsKey(v);
     }
 
     /**
      * Adds a new neighbor.
+     *
      * @param v The vertex to be added.
      */
-    void addNeighbour(int v, int dist){
+    void addNeighbour(int v, int dist) {
         this.neighbours.put(v, dist);
     }
 
 
     /**
      * Mark the vertex as visited.
+     *
      * @param b - value
      */
-    void setVisited(boolean b){
+    void setVisited(boolean b) {
         this.visited = b;
     }
 
+    /**
+     * Print information about vertex
+     */
 
     public void printInfo() {
         System.out.println("Vertex " + number + ": (" + x + "; " + y + "). Neighbours : " + neighbours);
     }
 
-    int getNumber() { return number; }
+    /**
+     * Get a number of vertex
+     *
+     * @return number of vertex
+     */
+    int getNumber() {
+        return number;
+    }
 }

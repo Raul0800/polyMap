@@ -37,17 +37,18 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.ArrayList;
 
-
+/**
+ * Class for map screen
+ */
 public class MapScreen extends Stage implements Screen, GestureListener {
     private SpriteBatch batch;
     private Sprite sprite;
     private float gX, gY;
-    private int widthMapPict;//ширина картинки карты
-    private int heightMapPict;//высота картинки карты
-    private float positionMapW, positionMapH;//позиция по У картинки карты
-    private int stateWidthScreen, stateHeightScreen;//позиция по Х картинки карты
-    //все переменные,описанные выше, изменяются при масштабировании
-    //private float statePositionW,statePositionH,stateWMap,stateHMap;// неизменная позиция и размеры картинки
+    private int widthMapPict;
+    private int heightMapPict;
+    private float positionMapW, positionMapH;
+    private int stateWidthScreen, stateHeightScreen;
+
 
     private int firstPoint, secondPoint;
     ShapeRenderer pointShape;
@@ -65,6 +66,11 @@ public class MapScreen extends Stage implements Screen, GestureListener {
 
     final SidePanel sidePanel;
 
+    /**
+     * Constructor, which does main things with the map
+     *
+     * @param game
+     */
     MapScreen(final MyGame game) {
         gX = gY = 0;
         this.game = game;
@@ -79,8 +85,6 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         dialog.setColor(Color.CLEAR);
         dialog.button("\n Аудитория не найдена!\n\n    OK   \n", true); //sends "true" as the result
 
-        //Обозначение для ниже стоящих кнопок.
-
         float sizeHeight_bFloor = game.getHeightScreen() * 0.07f,
                 sizeWidth_bFloor = game.getWidthScreen() * 0.07f;
 
@@ -93,8 +97,6 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         //nameOfSwitchFlButton.setName("nameOfSwitchFlButton");
         //stage.addActor(nameOfSwitchFlButton);
 
-        //Массив кнопок отвечающих за выбор этажа. Создано в виде массива с возможностью дальнейшнего
-        //расширения.
         TextButton[] switchFlButton = new TextButton[2];
         switchFlButton[0] = new TextButton("0", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
         switchFlButton[0].setSize(sizeWidth_bFloor, sizeHeight_bFloor);
@@ -169,7 +171,7 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         secondPointTextField = new TextField("", getSkin(colButUp, colButDown, sizeFontBut, Color.BLACK), "default");
         secondPointTextField.setSize(sizeWidth_fSearch, sizeHeight_fSearch);
         secondPointTextField.setMessageText("To");
-        secondPointTextField.setPosition(positionWidth_fSearch, positionHeight_fSearch - sizeHeight_fSearch);
+        secondPointTextField.setPosition(positionWidth_fSearch, positionHeight_fSearch - 100);
         secondPointTextField.setName("secondPointTextField");
 
 
@@ -188,23 +190,25 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         // initialize all menu items from atlas region.
         final Image image_map = new Image(buttons_new_atlas.findRegion("baseline_map_black"));
         final Image image_search = new Image(buttons_new_atlas.findRegion("baseline_directions_black"));
-        final Image image_favorite = new Image(buttons_new_atlas.findRegion("baseline_favorite_black"));
-        final Image image_departments = new Image(buttons_new_atlas.findRegion("baseline_school_black"));
+       // final Image image_favorite = new Image(buttons_new_atlas.findRegion("baseline_favorite_black"));
+        //final Image image_departments = new Image(buttons_new_atlas.findRegion("baseline_school_black"));
+        final Image image_help = new Image(new Texture("help.png"));
         final Image image_background = new Image(getTintedDrawable(atlas.findRegion("image_background"), Color.WHITE));
         final Image button_menu = new Image(atlas.findRegion("button_menu"));
 
         final Image image_logo = new Image(logo_atlas.findRegion("logo"));
 
         float NAV_HEIGHT = game.getHeightScreen();
-        float NAV_WIDTH = game.getWidthScreen()*3/4;
+        float NAV_WIDTH = game.getWidthScreen() * 3 / 4;
         sidePanel = new SidePanel(NAV_WIDTH, NAV_HEIGHT);
 
         sidePanel.add(image_logo).size(300, 300).expandX().row();
-        sidePanel.add(image_map).size(NAV_WIDTH,150 ).expandX().row();
-        sidePanel.add(image_search).size(NAV_WIDTH,150 ).expandX().row();
-        sidePanel.add(image_favorite).size(NAV_WIDTH,150 ).expandX().row();
-        sidePanel.add(image_departments).size(NAV_WIDTH,150 ).expandX().row();
-        sidePanel.add().height(getHeight()/4);
+        sidePanel.add(image_map).size(480, 150).expandX().row();
+        sidePanel.add(image_search).size(480, 150).expandX().row();
+        sidePanel.add(image_help).size(480, 150).expandX().row();
+        //sidePanel.add(image_favorite).size(480, 150).expandX().row();
+        //sidePanel.add(image_departments).size(480, 150).expandX().row();
+        sidePanel.add().height(getHeight() / 4);
 
         sidePanel.add(image_background);
         sidePanel.setBackground(image_background.getDrawable());
@@ -239,6 +243,7 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         image_search.setName("SEARCH");
         image_background.setName("IMAGE_BACKGROUND");
         image_map.setName("MAP");
+        image_help.setName("HELP");
 
         Image image_shadow = new Image(atlas.findRegion("image_shadow"));
         image_shadow.setHeight(NAV_HEIGHT);
@@ -260,7 +265,7 @@ public class MapScreen extends Stage implements Screen, GestureListener {
                     firstPointTextField.setMessageText("From");
                     onePointMode = twoPointMode = false;
 
-                }else if(actor.getName().equals("MAP")) {
+                } else if (actor.getName().equals("MAP")) {
                     sidePanel.showManually(closed);
                     secondPointTextField.remove();
                     firstPointTextField.setMessageText("Search in GZ");
@@ -270,15 +275,24 @@ public class MapScreen extends Stage implements Screen, GestureListener {
                 } else if (actor.getName().equals("BUTTON_MENU") || actor.getName().equals("IMAGE_BACKGROUND")) {
                     image_background.setTouchable(closed ? Touchable.enabled : Touchable.disabled);
                     sidePanel.showManually(closed);
+                } else if (actor.getName().equals("HELP")) {
+                    Gdx.net.openURI("https://docs.google.com/document/d/e/2PACX-1vSy42v8tRxigSHiJ4Oi_eDqDct9OBgMkgOPXi-r3lUiQVBF9sTh-bo-gGjvyiB-EfvL_aOHu-XcdNOK/pub");
                 }
             }
         };
-        addListeners(listener, image_search, button_menu, image_map);
+        addListeners(listener, image_search, button_menu, image_map, image_help);
 
         stage.addActor(sidePanel);
     }
 
-    //Новый метод для шрифтов!
+
+    /**
+     * Method for fonts
+     *
+     * @param color
+     * @param size
+     * @return BitMapFont
+     */
     public BitmapFont getFont(Color color, int size) {
         BitmapFont font;
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("skin/font.ttf"));
@@ -286,7 +300,7 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         parameter.size = 42;
         parameter.color = color;
 
-        parameter.characters = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ\"\n" +
+        parameter.characters = "АБВГДЕЁЖЗЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ\"\n" +
                 "                                              + \"абвгдеёжзийклмнопрстуфхцчшщъыьэюя\"\n" +
                 "                                              + \"1234567890.,:;_¡!¿?\"\n" +
                 "                                              + \"abcdefghijklmnopqrstuvwxyz\"n" +
@@ -301,6 +315,15 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         return font;
     }
 
+    /**
+     * Get skin
+     *
+     * @param colorUp
+     * @param colorDown
+     * @param sizeFont
+     * @param colorFont
+     * @return Skin
+     */
     public Skin getSkin(Color colorUp, Color colorDown, int sizeFont, Color colorFont) {
         Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         BitmapFont myFont = getFont(colorFont, sizeFont);
@@ -319,6 +342,9 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         return skin;
     }
 
+    /**
+     * Set start position map
+     */
     public void setStartPositionMap() {
         stateWidthScreen = widthMapPict = Gdx.app.getGraphics().getWidth();
         stateHeightScreen = heightMapPict = Gdx.app.getGraphics().getHeight();
@@ -338,6 +364,9 @@ public class MapScreen extends Stage implements Screen, GestureListener {
 
     }
 
+    /**
+     * Set position map
+     */
     public void setPositionMap() {
         camera = new OrthographicCamera(stateWidthScreen, stateHeightScreen);
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
@@ -346,7 +375,9 @@ public class MapScreen extends Stage implements Screen, GestureListener {
 
     }
 
-
+    /**
+     * Draw point
+     */
     public void drawPoint() {
 
         pointShape.begin(ShapeRenderer.ShapeType.Filled);
@@ -362,12 +393,15 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         pointShape.end();
     }
 
+    /**
+     * Draw path
+     */
     private void drawPath() {
         pointShape.begin(ShapeRenderer.ShapeType.Filled);
         pointShape.setColor(Color.RED);
         ArrayList<Vertex> path = game.getGraph().searchPath(firstPoint, secondPoint);
 
-        for(int i = 0; i < path.size() - 1; i++) {
+        for (int i = 0; i < path.size() - 1; i++) {
             pointShape.rectLine((path.get(i).getX() + positionMapW),
                     (path.get(i).getY() + positionMapH),
                     (path.get(i + 1).getX() + positionMapW),
@@ -381,12 +415,15 @@ public class MapScreen extends Stage implements Screen, GestureListener {
                 10);
         pointShape.rectLine((path.get(path.size() - 1).getX() + positionMapW),
                 (path.get(path.size() - 1).getY() + positionMapH),
-                ( path.get(path.size() - 1).getX() + positionMapW + 8),
+                (path.get(path.size() - 1).getX() + positionMapW + 8),
                 (path.get(path.size() - 1).getY() + positionMapH + 8),
                 10);
         pointShape.end();
     }
 
+    /**
+     * Get waiter
+     */
     public void getWaiter() {
         float positionHeightWaiter = game.getHeightScreen() * 0.4f;
         float positionWidthWaiter = 0;
@@ -405,6 +442,9 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         stage.addActor(waiter);
     }
 
+    /**
+     * Delete waiter
+     */
     public void deleteWaiter() {
         for (Actor actor : stage.getActors()) {
             if (actor.getName() == "waiter")
@@ -412,12 +452,24 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         }
     }
 
-
+    /**
+     * Add listeners
+     *
+     * @param listener
+     * @param actors
+     */
     public static void addListeners(EventListener listener, Actor... actors) {
         for (Actor actor : actors)
             actor.addListener(listener);
     }
 
+    /**
+     * Get tinted drawable
+     *
+     * @param region
+     * @param color
+     * @return sprite drawable
+     */
     public static Drawable getTintedDrawable(TextureAtlas.AtlasRegion region, Color color) {
         Sprite sprite = new Sprite(region);
         sprite.setColor(color);
@@ -425,6 +477,10 @@ public class MapScreen extends Stage implements Screen, GestureListener {
     }
 
     InputMultiplexer inputMultiplexer;
+
+    /**
+     * Show the stage
+     */
     public void show() {
         setStartPositionMap();
 
@@ -437,18 +493,21 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         //if(sidePanel.isOpen())
         //    Gdx.input.setInputProcessor(sidePanel.gestureDetector);
         //if(sidePanel.isClosed())
-            Gdx.input.setInputProcessor(inputMultiplexer);
+        Gdx.input.setInputProcessor(inputMultiplexer);
         //Gdx.input.setInputProcessor(stage);
 
     }
 
     @Override
+    /**
+     * Render the stage
+     */
     public void render(float delta) {
         //if(sidePanel.isOpen() || Gdx.input.getX() < 20.0f)
         //    Gdx.input.setInputProcessor(sidePanel.gestureDetector);
         //if(sidePanel.isClosed() && Gdx.input.getX() >= 20.0f)
         //    Gdx.input.setInputProcessor(inputMultiplexer);
-        if(sidePanel.isCompletelyClosed()) {
+        if (sidePanel.isCompletelyClosed()) {
             camera.update();
             batch.setProjectionMatrix(camera.combined);
         }
@@ -464,7 +523,7 @@ public class MapScreen extends Stage implements Screen, GestureListener {
                 firstPoint = Integer.parseInt(firstPointTextField.getText());
                 onePointMode = true;
 
-                if(firstPoint < 0)
+                if (firstPoint < 0)
                     throw new NumberFormatException("");
                 if (!game.getGraph().hasVertex(firstPoint)) {
                     throw new UndirGraph.NoSuchVertexException("no vertex");
@@ -479,13 +538,13 @@ public class MapScreen extends Stage implements Screen, GestureListener {
                 secondPoint = Integer.parseInt(secondPointTextField.getText());
                 twoPointMode = true;
 
-                if(secondPoint < 0)
+                if (secondPoint < 0)
                     throw new NumberFormatException("");
                 if (!game.getGraph().hasVertex(secondPoint)) {
                     throw new UndirGraph.NoSuchVertexException("no vertex");
                 }
             } catch (NumberFormatException | UndirGraph.NoSuchVertexException ex) {
-                if(stage.getActors().contains(secondPointTextField, true) ) {
+                if (stage.getActors().contains(secondPointTextField, true)) {
                     dialog.show(stage);
                 }
                 twoPointMode = false;
@@ -505,7 +564,7 @@ public class MapScreen extends Stage implements Screen, GestureListener {
 
         if (onePointMode)
             drawPoint();
-        if(twoPointMode)
+        if (twoPointMode)
             drawPath();
 
         stage.act(delta);
@@ -513,6 +572,9 @@ public class MapScreen extends Stage implements Screen, GestureListener {
     }
 
     @Override
+    /**
+     * Resize camera's position
+     */
     public void resize(int width, int height) {
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
     }
@@ -530,15 +592,23 @@ public class MapScreen extends Stage implements Screen, GestureListener {
     }
 
     @Override
+    /**
+     *Dispose the map
+     */
     public void dispose() {
         batch.dispose();
         map.dispose();
     }
 
+    /**
+     * Processing of interection with the map is below
+     */
+
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
         return false;
     }
+
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
@@ -546,55 +616,61 @@ public class MapScreen extends Stage implements Screen, GestureListener {
         return false;
     }
 
+
     @Override
     public boolean longPress(float x, float y) {
         return false;
     }
+
 
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
         return false;
     }
 
+
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-         if (camera.position.x - deltaX*camera.zoom >= 0 &&
-                camera.position.x - deltaX*camera.zoom<= stateWidthScreen
-                && camera.position.y+deltaY*camera.zoom >= positionMapH &&
-                camera.position.y + deltaY*camera.zoom <= positionMapH+heightMapPict
-                ){
-             if(sidePanel.isCompletelyClosed()) {
-                 camera.translate(-deltaX * camera.zoom, deltaY * camera.zoom);
-                 camera.update();
-             }
-        // System.out.println("camera.position.x: " + camera.position.x);
+        if (camera.position.x - deltaX * camera.zoom >= 0 &&
+                camera.position.x - deltaX * camera.zoom <= stateWidthScreen
+                && camera.position.y + deltaY * camera.zoom >= positionMapH &&
+                camera.position.y + deltaY * camera.zoom <= positionMapH + heightMapPict
+                ) {
+            if (sidePanel.isCompletelyClosed()) {
+                camera.translate(-deltaX * camera.zoom, deltaY * camera.zoom);
+                camera.update();
+            }
+            // System.out.println("camera.position.x: " + camera.position.x);
         }
         return true;
     }
+
 
     @Override
     public boolean panStop(float x, float y, int pointer, int button) {
         return false;
     }
 
+
     @Override
     public boolean zoom(float initialDistance, float distance) {
         return false;
     }
 
+
     @Override
     public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-        float initialDistance =initialPointer1.dst(initialPointer2);
-        float distance =pointer1.dst(pointer2);
-        if (initialDistance < distance &&camera.zoom * 0.99f<=1)
-            camera.zoom =camera.zoom*0.99f;
-        if (initialDistance >  distance && camera.zoom / 0.99f <=1)
+        float initialDistance = initialPointer1.dst(initialPointer2);
+        float distance = pointer1.dst(pointer2);
+        if (initialDistance < distance && camera.zoom * 0.99f <= 1)
+            camera.zoom = camera.zoom * 0.99f;
+        if (initialDistance > distance && camera.zoom / 0.99f <= 1)
             camera.zoom = camera.zoom / 0.99f;
-        if (camera.zoom <=1 && initialDistance != distance){
-            camera.translate((-(pointer1.x+pointer2.x)/2+ (initialPointer1.x+initialPointer2.x)/2)* 0.015f,
-                    ((pointer1.y+pointer2.y)/2-(initialPointer1.y+initialPointer2.y)/2)* 0.015f);
+        if (camera.zoom <= 1 && initialDistance != distance) {
+            camera.translate((-(pointer1.x + pointer2.x) / 2 + (initialPointer1.x + initialPointer2.x) / 2) * 0.015f,
+                    ((pointer1.y + pointer2.y) / 2 - (initialPointer1.y + initialPointer2.y) / 2) * 0.015f);
             camera.update();
-            //System.out.println("KEKEKKEKE" + (-(pointer1.y+pointer2.y)/2+(initialPointer1.y+initialPointer2.y)/2));
+
         }
         return true;
     }
@@ -604,4 +680,3 @@ public class MapScreen extends Stage implements Screen, GestureListener {
 
     }
 }
-
